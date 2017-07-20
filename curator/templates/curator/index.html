@@ -1,0 +1,15 @@
+{% extends "administrator/header.html" %}
+{% block content %}
+		<div class="row">
+
+			<div class='container-fluid'>
+			
+        	        <ul>
+				  	    {% for data in datasets %}
+				  	    <li><a href ="/curator/{{user_id}}/dataset/{{data.id}}">{{data.title}}</a></li>
+				  	    {% endfor%}
+				  	</ul>
+	        </div>
+		</div>
+	</div>
+{% endblock %}		

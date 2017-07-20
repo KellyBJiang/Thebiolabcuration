@@ -1,0 +1,64 @@
+{% extends "administrator/header.html" %}
+{% block content %}
+    <a href="/curator/{{user_id}}"><button type="button" class="btn btn-info">Back to Assignment</button></a>
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>Curation Topic: {{topic.topic}}</h3>
+        </div>
+        <div class="col-sm-6">
+            <div class="pull-right">
+                <input type="button" class="btn btn-info" value="Back" onclick="history.back();">
+                <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">
+            </div>
+        </div>
+    </div>
+    <script>
+        var info = '{{dataset.content|escapejs}}';
+        var obj = JSON.parse(info);
+    </script>
+    <div class="row">
+        <div class="col-sm-5">
+            <table class="table table-bordered" style = " background-color:#fefefe">
+                <script>
+                    for(var key in obj)
+                    {
+                    	document.write("<tr>");
+                    	document.write("<td>"+key+"</td>");	
+                    	document.write("<td>"+obj[key]+"</td>");	
+                    	document.write("</tr>"); 
+                    }	
+                </script>
+            </table>
+        </div>
+    	<div class="col-sm-7">
+    	    <div class="embed-responsive embed-responsive-4by3">
+    	        <iframe id="ncbipage" style="width: 100%; height: 100%; position: absolute" src="">
+                    <p>Your browser does not support iframes.</p>
+                </iframe>
+    	    </div>
+	        
+	        <script>
+	            var num = obj['Accession'];
+	            var str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+num;
+	            document.getElementById('ncbipage').src = str;
+	        </script>
+		    <h4>
+		        Is this dataset relavent to the curation topic?
+		    </h4>
+		    <form>
+                <label class="radio-inline"><input type="radio" name="optradio">Yes</label>
+                <label class="radio-inline"><input type="radio" name="optradio">No</label>
+            </form> 
+        
+            <div class="form-group" >
+                  <label for="comment">Comment:</label>
+                  <textarea class="form-control" rows="3" id="comment" style="width:50%"></textarea>
+            </div>
+            <input type="button" value="Submit" onclick="">
+	    </div>
+    </div>
+{% endblock %}
+
+
+
+
