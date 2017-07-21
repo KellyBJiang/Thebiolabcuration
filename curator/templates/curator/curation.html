@@ -51,40 +51,70 @@
 	            document.getElementById('pubmedpage').href = pubmed_str;
 	            
 	        </script>
-		   
+	        
+	        <form method='POST' action=''>
+	            {% csrf_token %}
+	             <div class = "row">
+		            <div class = "col-sm-6">    
+		                <h4> Is this dataset relavent to the curation topic? </h4>
+                        <ul id="ul_relavent">
+                            {% for radio in form.result %}
+                                <!--<li class="li_relavent">
+                                    <input id="id_name_{{forloop.counter0}}",name="selector",type="radio">
+                                    <label for="id_name_{{forloop.counter0}}">{{radio.choice_value}}</label>
+                                -->  
+                                    {{ radio }}
+                                    <div class="check"><div class="inside"></div></div>
+                                <!--</li>-->
+                            {% endfor %}
+                        </ul>
+                        <input type="submit"  class="btn btn-info"  value="Submit" onclick="">
+                    </div>
+                    <div class = "col-sm-6">
+                        {{form.comment}}
+                    </div>
+                    
+                 </div>
+    		        <!--{{form.as_p}}-->
+    		    
+            </form>	
+           
+            
+            
+            
+            
+            
 		    
-
-            		    
-		    
-		    <form method = "POST" action="/curator/{{user_id}}">
+		   <!-- <input type='submit', value = 'submit'/>
+		    <form method = "POST" action="">
 		        {% csrf_token %}
 		        <div class = "row">
 		            <div class = "col-sm-6">
-		                 <h4> Is this dataset relavent to the curation topic? </h4>
-		                <ul id="ul_relavent">
+		                 <h4> Is this dataset relavent to the curation topic? </h4>-->
+		                
+<!--		                <ul id="ul_relavent">
+		                    
                             <li class="li_relavent">
-                                <input class="radio_input" type="radio" id="f-option" name="selector">
+                                <input  type="radio" id="f-option" name="selector">
                                 <label for="f-option">Yes</label>
                                 <div class="check"></div>
                             </li>
                             <li class="li_relavent">
-                                <input class="radio_input" type="radio" id="s-option" name="selector">
+                                <input  type="radio" id="s-option" name="selector">
                                 <label for="s-option">No</label>
                                 <div class="check"><div class="inside"></div></div>
                             </li>
-                        </ul>
-                            <input type="button"  class="btn btn-info"  value="Submit" onclick="">
+                        </ul>-->
+                        
+<!--                            <input type="button"  class="btn btn-info"  value="Submit" onclick="">
 		            </div>
                        
 		            <div class = "col-sm-6">
                         <textarea placeholder="Leave your comment here..." rows="8" id="comment" style="width:90%; top:10px; position:relative"></textarea>
 		            </div>
 		        </div>
-                
-            
-                
-                
             </form> 
+-->            
 	    </div>
     </div>
 {% endblock %}

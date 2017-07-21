@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+
+
 class User(models.Model) : 
     name = models.CharField(max_length = 140)
     pw = models.CharField(max_length = 20)
@@ -32,11 +34,12 @@ class Dataset(models.Model) :
     
 
 class Curation(models.Model):
+    BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
     topic_id = models.ForeignKey('Topic',on_delete=models.CASCADE,)
     data_id = models.ForeignKey('Dataset', on_delete = models.CASCADE,)
     user_id = models.ForeignKey('User', on_delete = models.CASCADE,) 
-    result = models.BooleanField(default = False)
-    comment = models.TextField(default=None, blank=True, null=True)
+    result = models.BooleanField(choices=BOOL_CHOICES,default=False)
+    comment = models.TextField(default="Comment", blank=True, null=True)
     submit = models.BooleanField(default = False)
     date = models.DateTimeField(default=None, blank=True, null=True)
     def __str__(self):
