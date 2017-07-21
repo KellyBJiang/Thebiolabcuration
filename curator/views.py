@@ -3,6 +3,7 @@ from administrator.models import  User, Topic, Curation, Dataset, Summary
 from django.template import loader
 from django.http import HttpResponse
 
+
 # Create your views here.
 def index(request,user):
     #curation_data_ids = Curation.objects.values_list('data_id',flat=True).get(user_id = user)

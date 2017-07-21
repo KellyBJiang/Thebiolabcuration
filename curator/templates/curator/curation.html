@@ -1,4 +1,5 @@
 {% extends "administrator/header.html" %}
+
 {% block content %}
     <a href="/curator/{{user_id}}"><button type="button" class="btn btn-info">Back to Assignment</button></a>
     <div class="row">
@@ -17,7 +18,7 @@
         var obj = JSON.parse(info);
     </script>
     <div class="row">
-        <div class="col-sm-5">
+        <div class="col-sm-6">
             <table class="table table-bordered" style = " background-color:#fefefe">
                 <script>
                     for(var key in obj)
@@ -29,32 +30,61 @@
                     }	
                 </script>
             </table>
+            <a id="pubmedpage" href="" target="_blank" >Click here to read the original artical in pubmed</a>
         </div>
-    	<div class="col-sm-7">
+        
+    	<div class="col-sm-6">
     	    <div class="embed-responsive embed-responsive-4by3">
     	        <iframe id="ncbipage" style="width: 100%; height: 100%; position: absolute" src="">
                     <p>Your browser does not support iframes.</p>
                 </iframe>
+                
     	    </div>
 	        
 	        <script>
-	            var num = obj['Accession'];
-	            var str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+num;
-	            document.getElementById('ncbipage').src = str;
+	            var ncbinum = obj['Accession'];
+	            var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
+	            document.getElementById('ncbipage').src = ncbi_str;
+	            
+	            var pubnum = obj['PMID'];
+	            var pubmed_str = "https://www.ncbi.nlm.nih.gov/pubmed/?term="+pubnum;
+	            document.getElementById('pubmedpage').href = pubmed_str;
+	            
 	        </script>
-		    <h4>
-		        Is this dataset relavent to the curation topic?
-		    </h4>
-		    <form>
-                <label class="radio-inline"><input type="radio" name="optradio">Yes</label>
-                <label class="radio-inline"><input type="radio" name="optradio">No</label>
+		   
+		    
+
+            		    
+		    
+		    <form method = "POST" action="/curator/{{user_id}}">
+		        {% csrf_token %}
+		        <div class = "row">
+		            <div class = "col-sm-6">
+		                 <h4> Is this dataset relavent to the curation topic? </h4>
+		                <ul id="ul_relavent">
+                            <li class="li_relavent">
+                                <input class="radio_input" type="radio" id="f-option" name="selector">
+                                <label for="f-option">Yes</label>
+                                <div class="check"></div>
+                            </li>
+                            <li class="li_relavent">
+                                <input class="radio_input" type="radio" id="s-option" name="selector">
+                                <label for="s-option">No</label>
+                                <div class="check"><div class="inside"></div></div>
+                            </li>
+                        </ul>
+                            <input type="button"  class="btn btn-info"  value="Submit" onclick="">
+		            </div>
+                       
+		            <div class = "col-sm-6">
+                        <textarea placeholder="Leave your comment here..." rows="8" id="comment" style="width:90%; top:10px; position:relative"></textarea>
+		            </div>
+		        </div>
+                
+            
+                
+                
             </form> 
-        
-            <div class="form-group" >
-                  <label for="comment">Comment:</label>
-                  <textarea class="form-control" rows="3" id="comment" style="width:50%"></textarea>
-            </div>
-            <input type="button" value="Submit" onclick="">
 	    </div>
     </div>
 {% endblock %}

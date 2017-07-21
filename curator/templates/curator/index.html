@@ -1,12 +1,12 @@
 {% extends "administrator/header.html" %}
 {% block content %}
 		<div class="row">
-
 			<div class='container-fluid'>
-			
-        	        <ul>
+					
+        	        <ul class="list-grpup">
+        	        	<h2>Assignments for you:</h2>
 				  	    {% for data in datasets %}
-				  	    <li><a href ="/curator/{{user_id}}/dataset/{{data.id}}">{{data.title}}</a></li>
+				  	    <li class="list-group-item"><a href ="/curator/{{user_id}}/dataset/{{data.id}}">{{data.title}}</a></li>
 				  	    {% endfor%}
 				  	</ul>
 	        </div>
