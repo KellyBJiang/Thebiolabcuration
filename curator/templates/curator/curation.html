@@ -5,12 +5,13 @@
     <div class="row">
         <div class="col-sm-6">
             <h3>Curation Topic: {{topic.topic}}</h3>
-        </div>
-        <div class="col-sm-6">
             <div class="pull-right">
                 <input type="button" class="btn btn-info" value="Back" onclick="history.back();">
                 <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">
             </div>
+        </div>
+        <div class="col-sm-6">
+            
         </div>
     </div>
     <script>
@@ -18,22 +19,22 @@
         var obj = JSON.parse(info);
     </script>
     <div class="row">
-        <div class="col-sm-6">
-            <table class="table table-bordered" style = " background-color:#fefefe">
-                <script>
-                    for(var key in obj)
-                    {
-                    	document.write("<tr>");
-                    	document.write("<td>"+key+"</td>");	
-                    	document.write("<td>"+obj[key]+"</td>");	
-                    	document.write("</tr>"); 
-                    }	
-                </script>
-            </table>
-            <a id="pubmedpage" href="" target="_blank" >Click here to read the original artical in pubmed</a>
-        </div>
+        <!--<div class="col-sm-6">-->
+        <!--    <table class="table table-bordered" style = " background-color:#fefefe">-->
+        <!--        <script>-->
+        <!--            for(var key in obj)-->
+        <!--            {-->
+        <!--            	document.write("<tr>");-->
+        <!--            	document.write("<td>"+key+"</td>");	-->
+        <!--            	document.write("<td>"+obj[key]+"</td>");	-->
+        <!--            	document.write("</tr>"); -->
+        <!--            }	-->
+        <!--        </script>-->
+        <!--    </table>-->
+        <!--    <a id="pubmedpage" href="" target="_blank" >Click here to read the original artical in pubmed</a>-->
+        <!--</div>-->
         
-    	<div class="col-sm-6">
+    	<div class="col-sm-9">
     	    <div class="embed-responsive embed-responsive-4by3">
     	        <iframe id="ncbipage" style="width: 100%; height: 100%; position: absolute" src="">
                     <p>Your browser does not support iframes.</p>
@@ -46,75 +47,40 @@
 	            var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
 	            document.getElementById('ncbipage').src = ncbi_str;
 	            
-	            var pubnum = obj['PMID'];
-	            var pubmed_str = "https://www.ncbi.nlm.nih.gov/pubmed/?term="+pubnum;
-	            document.getElementById('pubmedpage').href = pubmed_str;
+	           // var pubnum = obj['PMID'];
+	           // var pubmed_str = "https://www.ncbi.nlm.nih.gov/pubmed/?term="+pubnum;
+	           // document.getElementById('pubmedpage').href = pubmed_str;
 	            
 	        </script>
-	        
+	   </div>
+	   <div class="col-sm-3">
 	        <form method='POST' action=''>
 	            {% csrf_token %}
 	             <div class = "row">
-		            <div class = "col-sm-6">    
-		                <h4> Is this dataset relavent to the curation topic? </h4>
-                        <ul id="ul_relavent">
-                            {% for radio in form.result %}
-                                <!--<li class="li_relavent">
-                                    <input id="id_name_{{forloop.counter0}}",name="selector",type="radio">
-                                    <label for="id_name_{{forloop.counter0}}">{{radio.choice_value}}</label>
-                                -->  
-                                    {{ radio }}
-                                    <div class="check"><div class="inside"></div></div>
-                                <!--</li>-->
-                            {% endfor %}
-                        </ul>
-                        <input type="submit"  class="btn btn-info"  value="Submit" onclick="">
-                    </div>
-                    <div class = "col-sm-6">
-                        {{form.comment}}
-                    </div>
-                    
-                 </div>
+	                <h4> Is this dataset relavent to the curation topic? </h4>
+                    <ul id="ul_relavent">
+                        {% for radio in form.result %}
+                            <!--<li class="li_relavent">
+                                <input id="id_name_{{forloop.counter0}}",name="selector",type="radio">
+                                <label for="id_name_{{forloop.counter0}}">{{radio.choice_value}}</label>
+                            -->  
+                                {{ radio }}
+                                <div class="check"><div class="inside"></div></div>
+                            <!--</li>-->
+                        {% endfor %}
+                    </ul>
+                
+                </div>
+                <div class = row"">
+                    {{form.comment}}
+                </div>
+                <br>
+                <div class = "row">
+                    <input type="submit"  class="btn btn-info"  value="Submit" onclick="">    
+                </div>
     		        <!--{{form.as_p}}-->
     		    
             </form>	
-           
-            
-            
-            
-            
-            
-		    
-		   <!-- <input type='submit', value = 'submit'/>
-		    <form method = "POST" action="">
-		        {% csrf_token %}
-		        <div class = "row">
-		            <div class = "col-sm-6">
-		                 <h4> Is this dataset relavent to the curation topic? </h4>-->
-		                
-<!--		                <ul id="ul_relavent">
-		                    
-                            <li class="li_relavent">
-                                <input  type="radio" id="f-option" name="selector">
-                                <label for="f-option">Yes</label>
-                                <div class="check"></div>
-                            </li>
-                            <li class="li_relavent">
-                                <input  type="radio" id="s-option" name="selector">
-                                <label for="s-option">No</label>
-                                <div class="check"><div class="inside"></div></div>
-                            </li>
-                        </ul>-->
-                        
-<!--                            <input type="button"  class="btn btn-info"  value="Submit" onclick="">
-		            </div>
-                       
-		            <div class = "col-sm-6">
-                        <textarea placeholder="Leave your comment here..." rows="8" id="comment" style="width:90%; top:10px; position:relative"></textarea>
-		            </div>
-		        </div>
-            </form> 
--->            
 	    </div>
     </div>
 {% endblock %}
