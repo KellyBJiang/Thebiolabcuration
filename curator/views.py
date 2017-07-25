@@ -11,11 +11,19 @@ def index(request,user):
     #curation_data_ids = Curation.objects.values_list('data_id',flat=True).get(user_id = user)
     #datasets = Dataset.objects.filter(pk__in = [curation_data_ids])
     curation_data_ids = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,submit = False)
+    curation_submitted = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,submit = True)
+    curation_undicided = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,result='U')
     datasets = Dataset.objects.filter(pk__in = curation_data_ids)
+    datasets_submitted = Dataset.objects.filter(pk__in = curation_submitted)
+    datasets_undicided = Dataset.objects.filter(pk__in = curation_undicided)
     template = loader.get_template('curator/index.html')
     context = {
         'curation_data_ids':curation_data_ids,
+        'curation_submitted':curation_submitted,
+        'curation_undicided' : curation_undicided,
         'datasets':datasets,
+        'datasets_submitted':datasets_submitted,
+        'datasets_undicided':datasets_undicided,
         'user_id':user,
     }
     return HttpResponse(template.render(context, request))
@@ -23,7 +31,8 @@ def index(request,user):
 
 def curation(request,user,dataset_id):
     dataset = Dataset.objects.get(pk = dataset_id)
-    topic_id = Dataset.objects.values_list('topic_id',flat=True).get(pk = dataset_id)
+    # topic_id = Dataset.objects.values_list('topic_id',flat=True).get(pk = dataset_id)
+    topic_id = Curation.objects.values_list('topic_id',flat = True).get(user_id = user, data_id = dataset_id)
     topic = Topic.objects.get(pk = topic_id)
     template = loader.get_template('curator/curation.html')
     

@@ -1,15 +1,123 @@
 {% extends "administrator/header.html" %}
 {% block content %}
+		<!--To do List-->
+		<nav class="navbar navbar-default" style="background-color: #e3f2fd;">
+		  <div class="container-fluid">
+
+		    <ul class="nav navbar-nav">
+		      
+		      <li id="0" onClick="reply_click(this.id)">
+		      	<a href="#">To Do</a>
+		      </li>
+		      <li id="1" onClick="reply_click(this.id)">
+		      	<a href="#">submitted</a>
+		      </li>
+		      <li id="2" onClick="reply_click(this.id)">
+		      	<a href="#">Undicided</a>
+		      	</li>
+		    </ul>
+		  </div>
+		</nav>
+		
+		
+	
 		<div class="row">
-			<div class='container-fluid'>
-					
-        	        <ul class="list-grpup">
-        	        	<h2>Assignments for you:</h2>
-				  	    {% for data in datasets %}
-				  	    <li class="list-group-item"><a href ="/curator/{{user_id}}/dataset/{{data.id}}">{{data.title}}</a></li>
-				  	    {% endfor%}
-				  	</ul>
-	        </div>
+			<div id="display">
+				<h1>Display here:</h1>
+			</div>
 		</div>
-	</div>
+		
+<script>
+   reply_click(0);
+    function reply_click(clicked_id)
+    {
+       
+       if(clicked_id == 0)
+       {
+       	
+           document.getElementById("display").innerHTML = 
+                "<div class='row'>"+
+					"<div class='container-fluid'>"+
+        	        	"<ul class='list-grpup'>"+
+        	        		"<h5>You have {{datasets.count}} assigments:</h5>"+
+			  	    		"{% for data in datasets %}"+
+								"<li class='list-group-item'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'><table class='table' style='margin-bottom:0px ;'><tr><td>{{data.accNo}}</td><td align='left'>{{data.title}}</td></tr></table></a></li>"+
+			  	    		"{% endfor%}"+
+				  		"</ul>"+
+	        		"</div>"+
+				"</div>";
+       }
+        if(clicked_id==1)
+        {
+            var content = document.getElementById("display");
+             content.innerHTML = 
+             "<div class='row'>"+
+					"<div class='container-fluid'>"+
+        	        	"<ul class='list-grpup'>"+
+        	        		"<h5>You have {{datasets_submitted.count}} submitted assigments:</h5>"+
+			  	    		"{% for data in datasets_submitted %}"+
+								"<li class='list-group-item'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'><table class='table' style='margin-bottom:0px ;'><tr><td>{{data.accNo}}</td><td align='left'>{{data.title}}</td></tr></table></a></li>"+
+			  	    		"{% endfor%}"+
+				  		"</ul>"+
+	        		"</div>"+
+				"</div>";
+        }
+        if(clicked_id==2)
+        {
+            document.getElementById("display").innerHTML = 
+            	"<div class='row'>"+
+					"<div class='container-fluid'>"+
+        	        	"<ul class='list-grpup'>"+
+        	        		"<h5>You have {{datasets_undicided.count}} undicided assigments:</h5>"+
+			  	    		"{% for data in datasets_undicided %}"+
+								"<li class='list-group-item'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'><table class='table' style='margin-bottom:0px ;'><tr><td>{{data.accNo}}</td><td align='left'>{{data.title}}</td></tr></table></a></li>"+
+			  	    		"{% endfor%}"+
+				  		"</ul>"+
+	        		"</div>"+
+				"</div>";
+        }
+       
+
+    }
+   </script>
+
+
+	
+
+		<!--<div class="row">-->
+			
+		<!--	<div class='container-fluid'>-->
+					
+  <!--      	        <ul class="list-grpup">-->
+  <!--      	        	<h2>Assignments for you:</h2>-->
+		<!--		  	    {% for data in datasets %}-->
+		<!--		  	    <li class="list-group-item"><a href ="/curator/{{user_id}}/dataset/{{data.id}}">{{data.title}}</a></li>-->
+		<!--		  	    {% endfor%}-->
+		<!--		  	</ul>-->
+	 <!--       </div>-->
+		<!--</div>-->
+		<!--undicided-->
+		<!--<div class="row">-->
+		<!--	<div class='container-fluid'>-->
+  <!--      	        <ul class="list-grpup">-->
+  <!--      	        	<h2>Assignment you haven't dicided:</h2>-->
+		<!--		  	    {% for data in datasets_undicided %}-->
+		<!--		  	    <li class="list-group-item"><a href ="/curator/{{user_id}}/dataset/{{data.id}}">{{data.title}}</a></li>-->
+		<!--		  	    {% endfor%}-->
+		<!--		  	</ul>-->
+	 <!--       </div>-->
+		<!--</div>-->
+		
+		<!--submitted-->
+		<!--	<div class="row">-->
+		<!--	<div class='container-fluid'>-->
+  <!--      	        <ul class="list-grpup">-->
+  <!--      	        	<h2>Assignment submitted:</h2>-->
+		<!--		  	    {% for data in datasets_submitted %}-->
+		<!--		  	    <li class="list-group-item"><a href ="/curator/{{user_id}}/dataset/{{data.id}}">{{data.title}}</a></li>-->
+		<!--		  	    {% endfor%}-->
+		<!--		  	</ul>-->
+	 <!--       </div>-->
+		<!--</div>-->
+
 {% endblock %}		

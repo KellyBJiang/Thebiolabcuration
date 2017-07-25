@@ -12,6 +12,7 @@ class CurationFrom(forms.ModelForm):
         widgets = {
    
             'result':forms.RadioSelect(attrs={'type': 'radio', 'name':'selector'}),
+            #'result':forms.RadioSelect(attrs={'class':"radio-inline"}),
             'comment': forms.Textarea(attrs={'row': 10,'style':'top: 10px; position: relative','placeholder':'leave your comment'}),
            
             
