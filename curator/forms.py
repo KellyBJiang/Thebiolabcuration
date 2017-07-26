@@ -7,7 +7,7 @@ class CurationFrom(forms.ModelForm):
         model = Curation
         fields = [
                 "result",
-                "comment"
+                "comment",
         ]
         widgets = {
    

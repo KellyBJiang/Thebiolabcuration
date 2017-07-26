@@ -33,6 +33,11 @@ def curation(request,user,dataset_id):
     dataset = Dataset.objects.get(pk = dataset_id)
     # topic_id = Dataset.objects.values_list('topic_id',flat=True).get(pk = dataset_id)
     topic_id = Curation.objects.values_list('topic_id',flat = True).get(user_id = user, data_id = dataset_id)
+    
+    cur_comment = Curation.objects.values_list('comment',flat = True).get(user_id = user, data_id = dataset_id)
+    cur_result = Curation.objects.values_list('result',flat = True).get(user_id = user, data_id = dataset_id)
+    cur_submit = Curation.objects.values_list('submit',flat = True).get(user_id = user, data_id = dataset_id)
+    
     topic = Topic.objects.get(pk = topic_id)
     template = loader.get_template('curator/curation.html')
     
@@ -50,20 +55,16 @@ def curation(request,user,dataset_id):
             return redirect("index", user = user)
         else:
             return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
-            # form = CurationFrom()
-            # context = {
-            #     'dataset':dataset,
-            #     'user_id':user,
-            #     'topic' : topic,
-            #     'form':form,
-            # }
-            # return HttpResponse(template.render(context, request))
     else:
-        form = CurationFrom(request.POST or None)
+        form = CurationFrom(initial={'comment':cur_comment, 'result' : cur_result})
+        
         context = {
                 'dataset':dataset,
                 'user_id':user,
                 'topic' : topic,
                 'form':form,
+                'cur_comment':cur_comment,
+                'cur_result':cur_result,
+                'cur_submit':cur_submit,
             }
         return HttpResponse(template.render(context, request))

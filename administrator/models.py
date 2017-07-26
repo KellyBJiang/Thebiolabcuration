@@ -44,7 +44,7 @@ class Curation(models.Model):
     data_id = models.ForeignKey('Dataset', on_delete = models.CASCADE,)
     user_id = models.ForeignKey('User', on_delete = models.CASCADE,) 
     result = models.CharField(max_length=1,choices=RESULT_CHOICES, default="N")
-    comment = models.TextField(default="Comment", blank=True, null=True)
+    comment = models.TextField(default="Leave your Comment", blank=True, null=True)
     submit = models.BooleanField(default = False)
     date = models.DateTimeField(default=None, blank=True, null=True)
     def __str__(self):
