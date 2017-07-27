@@ -1,5 +1,12 @@
 {% extends "administrator/header.html" %}
 {% block content %}
+<div class="container">
     <h3>Hey! Welcome to the Login page</h3>
-   
+
+   <form methods="POST">
+       {% csrf_token %}
+       {{form.as_p}}
+       <button type="submit">Login</button>
+   </form>
+   </div>
 {% endblock %}

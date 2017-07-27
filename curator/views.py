@@ -4,7 +4,7 @@ from django.template import loader
 from django.http import HttpResponse,HttpResponseRedirect
 from .forms import CurationFrom
 from django.utils import timezone
-
+import requests
 
 # Create your views here.
 def index(request,user):
@@ -41,6 +41,10 @@ def curation(request,user,dataset_id):
     topic = Topic.objects.get(pk = topic_id)
     template = loader.get_template('curator/curation.html')
     
+    convert_pmc=requests.get('https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=22863743&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit')
+    pmcjson = convert_pmc.json()
+    
+    
     
     if request.method == "POST":
         curation = Curation.objects.get(user_id = user, data_id = dataset_id, topic_id=topic_id)
@@ -66,5 +70,6 @@ def curation(request,user,dataset_id):
                 'cur_comment':cur_comment,
                 'cur_result':cur_result,
                 'cur_submit':cur_submit,
+                'pmcjson':pmcjson,
             }
         return HttpResponse(template.render(context, request))
