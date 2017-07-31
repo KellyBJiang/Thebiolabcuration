@@ -1,12 +1,12 @@
 from django.shortcuts import render,redirect
-from .models import  User, Topic, Curation, Dataset, Summary
+from .models import  Topic, Curation, Dataset, Summary
 from django.template import loader
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import auth
-
-
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+#from django.contrib.auth.forms import UserCreationForm
+from .forms import UserCreationForm
+
 
 # Create your views here.
 @login_required
@@ -28,3 +28,18 @@ def logged_in(request):
          return HttpResponseRedirect('/admin/%d/'%request.user.id)
     else: #curator
         return HttpResponseRedirect('/curator/%d/'%request.user.id)
+
+def logged_out(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
+    
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    else:
+        form = UserCreationForm()
+        args = {'form': form}
+        return render(request, 'administrator/register.html', args)

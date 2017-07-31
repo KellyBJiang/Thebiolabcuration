@@ -1,42 +1,31 @@
 {% extends "administrator/header.html" %}
 {% block content %}
-  <div class = "container">
-   {% if form.errors %}
-    <p class="error">Sorry, that's not a valid username or password</p>
-   {% endif %}
-
-  <form action="" method="post">
-     {% csrf_token %}
-     <br>
-     <br>
-     <label for="username">User name:</label>
-     <input type="text" name="username" value="" id="username">
-     <br>
-     <br>
-     <label for="password">Password:</label>
-     <input type="password" name="password" value="" id="password">
-     <br>
-     <br>
-     <input type="submit" value="login" />
-     <input type="hidden" name="next" value="/logged_in/" />
-     <!-- {% if request.user.is_staff %}-->
-     <!--     <input type="hidden" name="next" value="/admin/{{request.user.id}}" />-->
-     <!-- {% else %}-->
-     <!--     <input type="hidden" name="next" value="/curator/{{request.user.id}}" />-->
-     <!-- {% endif %}-->
-     <!--<input type="hidden" name="next" value="/curator/{{request.user.id}}" />-->
-
-  </form>
- </div>
- 
+<div class = "container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        {% if form.errors %}
+        <p class="error">Sorry, that's not a valid username or password</p>
+        {% endif %}
+        <br>
+        <h1 class="text-center">LOGO</h1>
+        <br>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">User name:</label>
+                <input type="text" class="form-control" name="username" value="" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" name="password" value="" id="password">
+            </div>
+                <input type="submit" class="btn btn-primary btn-block" value="LOG IN" />
+                <input type="hidden" name="next"  value="/logged_in/" />
+        </form>
+        <br>
+        <p align="center">Don't have an account? <a href="/register/">Sign up</a></p>
+    </div>
+    <div class="col-md-4"></div>
+</div>
 {% endblock %}
 
-<!--<div class="container">-->
-<!--    <h3>Hey! Welcome to the Login page</h3>-->
-
-<!--   <form methods="POST">-->
-<!--       {% csrf_token %}-->
-<!--       {{form.as_p}}-->
-<!--       <button type="submit">Login</button>-->
-<!--   </form>-->
-<!--   </div>-->

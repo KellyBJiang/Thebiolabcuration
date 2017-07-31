@@ -1,0 +1,21 @@
+{% extends "administrator/header.html" %}
+{% block content %}
+
+<div class = "container">
+    <div class="col-ms-4"></div>
+    <div class="col-ms-4">
+        {% if form.errors %}
+            <p class="error">Sorry, that's not a valid username or password</p>
+        {% endif %}
+        <h1>Join Curation</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button tpye="submit" class="btn btn-primary btn-block">Sign Up</button>
+        </form>
+    </div>
+    <div class="col-ms-4"></div>
+</div>
+
+ 
+{% endblock %}
