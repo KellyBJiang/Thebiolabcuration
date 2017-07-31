@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-from administrator.models import  User, Topic, Curation, Dataset, Summary
+from administrator.models import   Topic, Curation, Dataset, Summary
 from django.template import loader
 from django.http import HttpResponse,HttpResponseRedirect
 from .forms import CurationFrom
 from django.utils import timezone
 import requests
+import json 
+from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request,user):
@@ -31,9 +33,10 @@ def index(request,user):
 
 def curation(request,user,dataset_id):
     dataset = Dataset.objects.get(pk = dataset_id)
+    pubmedid = Dataset.objects.values_list('pubNo',flat = True).get(pk = dataset_id)
+    
     # topic_id = Dataset.objects.values_list('topic_id',flat=True).get(pk = dataset_id)
     topic_id = Curation.objects.values_list('topic_id',flat = True).get(user_id = user, data_id = dataset_id)
-    
     cur_comment = Curation.objects.values_list('comment',flat = True).get(user_id = user, data_id = dataset_id)
     cur_result = Curation.objects.values_list('result',flat = True).get(user_id = user, data_id = dataset_id)
     cur_submit = Curation.objects.values_list('submit',flat = True).get(user_id = user, data_id = dataset_id)
@@ -41,8 +44,13 @@ def curation(request,user,dataset_id):
     topic = Topic.objects.get(pk = topic_id)
     template = loader.get_template('curator/curation.html')
     
-    convert_pmc=requests.get('https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=22863743&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit')
-    pmcjson = convert_pmc.json()
+    
+    
+    #Get data from ID convertor
+    convert_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+pubmedid+'&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit'
+    #str = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=22863743&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit'
+    convert_pmc=requests.get(convert_url)
+    jsonString=convert_pmc.content  
     
     
     
@@ -70,6 +78,8 @@ def curation(request,user,dataset_id):
                 'cur_comment':cur_comment,
                 'cur_result':cur_result,
                 'cur_submit':cur_submit,
-                'pmcjson':pmcjson,
+                'jsonString':jsonString,
+                
+                
             }
         return HttpResponse(template.render(context, request))

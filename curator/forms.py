@@ -1,5 +1,5 @@
 from django import forms
-from administrator.models import  User, Topic, Curation, Dataset, Summary
+from administrator.models import  Topic, Curation, Dataset, Summary
 from django.forms.widgets import TextInput
 
 class CurationFrom(forms.ModelForm):

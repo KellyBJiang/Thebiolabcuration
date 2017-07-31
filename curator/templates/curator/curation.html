@@ -22,6 +22,40 @@
         </div>
     </nav>
 
+    <!--TABS for the menu bar-->
+    <!--<ul class="nav nav-tabs">-->
+    <!--    <li ><a href="/curator/{{user_id}}"><img src="https://cdn4.iconfinder.com/data/icons/system-ui-set/512/triangle-arrow-left-back-last-vector-ui-128.png" style="height:20px; width=100%"></img>Back to Assignment</a></li>-->
+    <!--    <li><a data-toggle="tab" href="#geo">GEO</a></li>-->
+    <!--    <li><a data-toggle="tab" href="#pubmed">Pubmed</a></li>-->
+    <!--    <li><a data-toggle="tab" href="#pmc">PMC</a></li>-->
+    <!--</ul>-->
+    <!--<div class="row">-->
+    <!--    <div class="tab-content">-->
+    <!--        <div id="geo" class="tab-pane fade">-->
+    <!--                <div class="embed-responsive embed-responsive-4by3">-->
+    <!--                    <iframe id="renderpage" style="width: 100%; height: 100%; position: absolute; " src="">-->
+    <!--                        <p>Your browser does not support iframes.</p>-->
+    <!--                    </iframe>-->
+    <!--                </div>-->
+    <!--        </div>-->
+    <!--        <div id="pubmed" class="tab-pane fade">-->
+    <!--            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>-->
+    <!--        </div>-->
+    <!--        <div id="pmc" class="tab-pane fade">-->
+    <!--            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--</div>-->
+
+
+
+
+
+
+
+
+
+
 	
 	
     <script>
@@ -49,7 +83,7 @@
                 function change_url(clicked_id)
                 {
                     var ncbinum = obj['Accession'];
-                    var pubnum = obj['PMID']
+                    var pubnum = obj['PMID'];
                     if(clicked_id == 'ncbi')
                     {
 	                    var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
@@ -62,7 +96,10 @@
                     }
                     if(clicked_id == 'pmc')
                     {
-                        
+	                    var pmcinfo = JSON.parse('{{jsonString|escapejs}}');
+	                    var pmcnum = pmcinfo.records[0].pmcid;
+	                    var pmc_str ="https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum;
+	                    document.getElementById('renderpage').src = pmc_str;
                     }
                 }
 	        </script>
@@ -72,21 +109,6 @@
 	            {% csrf_token %}
 	             <div class = "row">
 	                <h3>Curation Topic: {{topic.topic}}</h3><br>
-	                
-	                
-	                
-	                <h3>{{pmcjson}}</h3>
-	                <h4>{{dataset.content}}</h4>
-                    <p id="demo"></p>
-	                <script>
-	                    var pmcinfo = JSON.parse('{{r|escapejs}}');
-	                    var realpmc = pmcinfo['status'];
-	                    document.getElementById('demo').innerHTML= realpmc;
-	                </script>
-	                
-	                
-	                
-	                
 	                
 	                <h4> Is this dataset relavent to the curation topic? </h4>
                     <ul id="ul_relavent">

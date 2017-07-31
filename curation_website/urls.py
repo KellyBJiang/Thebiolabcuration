@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from administrator import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^curator/',include('curator.urls')),
     url(r'^$',include('administrator.urls')),
+    url(r'^logged_in/',views.logged_in, name = 'logged_in')
 ]
