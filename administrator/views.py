@@ -5,8 +5,9 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 #from django.contrib.auth.forms import UserCreationForm
-from .forms import UserCreationForm
 
+# from .forms import MyUserCreationForm
+from .forms import UserRegisterForm
 
 # Create your views here.
 @login_required
@@ -32,14 +33,21 @@ def logged_in(request):
 def logged_out(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
-    
+
 def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
+    title="Register"
+    form = UserRegisterForm(request.POST or None)
+    if form.is_valid():
+        user = form.save(commit = False)
+        password = form.cleaned_data.get('password1')
+        user.set_password(password)
+        user.save()
+        return redirect('/')
+        
     else:
-        form = UserCreationForm()
-        args = {'form': form}
-        return render(request, 'administrator/register.html', args)
+        context = {
+            "form": form,
+            "title" : title
+        }
+        return render(request, "administrator/register.html",context)
+    
