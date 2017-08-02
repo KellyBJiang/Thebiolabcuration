@@ -97,7 +97,8 @@ def curation(request,user,dataset_id):
             curation.save()
             #return redirect("curator/"+str(user))
             if datasets_next_unsubmitted.count() > 0:
-                return HttpResponseRedirect("curator/"+str(user)+"/datasets/"+str(datasets_next_unsubmitted[0].id))
+                # return HttpResponseRedirect("curator/"+str(user)+"/datasets/"+str(datasets_next_unsubmitted[0].id))
+                return redirect("curation",user = user,dataset_id = datasets_next_unsubmitted[0].id)
             else:
                 return redirect("index", user = user)
         else:

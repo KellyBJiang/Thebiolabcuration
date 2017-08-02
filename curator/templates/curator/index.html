@@ -36,7 +36,7 @@
        	
            document.getElementById("display").innerHTML = 
         		"<h5>Welcome  {{user.username}}, you have {{datasets_count}} assigments:</h5>"+
-     	        	"<table id='to_do' class='table'>"+
+     	        	"<table id='to_do' class='table table-hover'>"+
      	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
     	        		"<tbody>"+
 			  	    		"{% for data in datasets %}"+
