@@ -20,25 +20,14 @@
 			</ul>    
 			</div>
 		</nav>
-	
-		<div class="row">
-			<div class = "container">
-				<input type="text" name="dataset number" class="form-control" placeholder="Desired datasets shown per page">	
-				<button type="submit">Apply</button>	
-			</div>
+		
+		<div class="container">
 			
-		</div>
-		
-	
-		
-		<div class="row">
-			<div id="display">
-				
+			<div id="display">	
 			</div>
 		</div>
 		
 <script>
-   reply_click(0);
     function reply_click(clicked_id)
     {
        
@@ -46,83 +35,91 @@
        {
        	
            document.getElementById("display").innerHTML = 
-                "<div class='row'>"+
-					"<div class='container-fluid'>"+
-        	        	"<ul class='list-grpup'>"+
-        	        		"<h5>Welcome  {{user.username}}, you have {{datasets_count}} assigments:</h5>"+
+        		"<h5>Welcome  {{user.username}}, you have {{datasets_count}} assigments:</h5>"+
+     	        	"<table id='to_do' class='table'>"+
+     	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
+    	        		"<tbody>"+
 			  	    		"{% for data in datasets %}"+
-								"<li class='list-group-item'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'><table class='table' style='margin-bottom:0px ;'><tr><td>{{data.accNo}}</td><td align='left'>{{data.title}}</td><td>{{data.date}}</td></tr></table></a></li>"+
-			  	    		"{% endfor%}"+
-				  		"</ul>"+
-	        		"</div>"+
-				"</div>";
+								"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'>{{data.title}}</a></td></tr>"+
+			  	    		"{% endfor %}"+
+			  			"</tbody>"+
+			  		"</table>"
        }
         if(clicked_id==1)
         {
             var content = document.getElementById("display");
-             content.innerHTML = 
-             "<div class='row'>"+
-					"<div class='container-fluid'>"+
-        	        	"<ul class='list-grpup'>"+
-        	        		"<h5>Welcome {{user.username}}, you have {{datasets_submitted.count}} submitted assigments:</h5>"+
+            content.innerHTML = 
+            	"<h5>Welcome  {{user.username}}, you have {{datasets_submitted_count}} unsubmitted assigments:</h5>"+
+       	        	"<table id='submitted' class='table'>"+
+       	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
+       	        		"<tbody>"+
 			  	    		"{% for data in datasets_submitted %}"+
-								"<li class='list-group-item'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'><table class='table' style='margin-bottom:0px ;'><tr><td>{{data.accNo}}</td><td align='left'>{{data.title}}</td><td>{{data.date}}</td></tr></table></a></li>"+
-			  	    		"{% endfor%}"+
-				  		"</ul>"+
-	        		"</div>"+
-				"</div>";
+								"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'>{{data.title}}</a></td></tr>"+
+			  	    		"{% endfor %}"+
+			  			"</tbody>"+
+			  		"</table>"
         }
         if(clicked_id==2)
         {
             document.getElementById("display").innerHTML = 
-            	"<div class='row'>"+
-					"<div class='container-fluid'>"+
-        	        	"<ul class='list-grpup'>"+
-        	        		"<h5>Welcome {{user.username}}, you have {{datasets_undicided.count}} undicided assigments:</h5>"+
-			  	    		"{% for data in datasets_undicided %}"+
-								"<li class='list-group-item'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'><table class='table' style='margin-bottom:0px ;'><tr><td>{{data.accNo}}</td><td align='left'>{{data.title}}</td><td>{{data.date}}</td></tr></table></a></li>"+
-			  	    		"{% endfor%}"+
-				  		"</ul>"+
-	        		"</div>"+
-				"</div>";
+            	"<h5>Welcome  {{user.username}}, you have {{datasets_undicided_count}} undicided assigments:</h5>"+
+       	        	"<table id='undecided' class='table'>"+
+       	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
+       	        		"<tbody>"+
+		  	    			"{% for data in datasets_undicided %}"+
+								"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'>{{data.title}}</a></td></tr>"+
+		  	    			"{% endfor %}"+
+			  			"</tbody>"+
+			  		"</table>"
         }
-       
-
+       $('.table').DataTable({
+		        "pagingType": "full_numbers",
+		        "paging":   true,
+		        "ordering": false,
+		        "filter": true,
+		        "info": true,
+		        "iDisplayLength": 10,
+		        "lengthMenu": [[3, 10, 25, 50, -1], [3, 10, 25, 50, "All"]]
+	    });
     }
+    $(document).ready(function() 
+    {
+    	reply_click(0);
+	});
    </script>
 
 
 
 
-<div class="row">
-	<div class="text-center">
-		<div class="pagination" >
-		{% if datasets.has_other_pages %}
-			<ul class="pagination">
-				{% if datasets.has_previous %}
-					<li><a href="?page={{ datasets.previous_page_number }}">&laquo;</a></li>
-				{% else %}
-					<li class="disabled"><span>&laquo;</span></li>
-				{% endif %}
+<!--<div class="row">-->
+<!--	<div class="text-center">-->
+<!--		<div class="pagination" >-->
+<!--		{% if datasets.has_other_pages %}-->
+<!--			<ul class="pagination">-->
+<!--				{% if datasets.has_previous %}-->
+<!--					<li><a href="?page={{ datasets.previous_page_number }}">&laquo;</a></li>-->
+<!--				{% else %}-->
+<!--					<li class="disabled"><span>&laquo;</span></li>-->
+<!--				{% endif %}-->
 					
-				{% for i in datasets.paginator.page_range %}
-					{% if users.number == i %}
-						<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-					{% else %}
-					    <li><a href="?page={{ i }}">{{ i }}</a></li>
-					{% endif %}
-				{% endfor %}
+<!--				{% for i in datasets.paginator.page_range %}-->
+<!--					{% if users.number == i %}-->
+<!--						<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>-->
+<!--					{% else %}-->
+<!--					    <li><a href="?page={{ i }}">{{ i }}</a></li>-->
+<!--					{% endif %}-->
+<!--				{% endfor %}-->
 				
-				{% if datasets.has_next %}
-					<li><a href="?page={{ datasets.next_page_number }}">&raquo;</a></li>
-				{% else %}
-					<li class="disabled"><span>&raquo;</span></li>
-				{% endif %}
-			</ul>
-		{% endif %}
-		</div>
-	</div>
-</div>
+<!--				{% if datasets.has_next %}-->
+<!--					<li><a href="?page={{ datasets.next_page_number }}">&raquo;</a></li>-->
+<!--				{% else %}-->
+<!--					<li class="disabled"><span>&raquo;</span></li>-->
+<!--				{% endif %}-->
+<!--			</ul>-->
+<!--		{% endif %}-->
+<!--		</div>-->
+<!--	</div>-->
+<!--</div>-->
 
 
 {% else %}

@@ -25,22 +25,23 @@ def index(request,user):
     datasets_undicided = Dataset.objects.filter(pk__in = curation_undicided) #undicided list
     template = loader.get_template('curator/index.html')
     
-    paginator = Paginator(datasets, 3) # Show 3 datasets per page
-    page = request.GET.get('page')
-    try:
-        page_datasets = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page_datasets = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page_datasets = paginator.page(paginator.num_pages)
+    # paginator = Paginator(datasets, 3) # Show 3 datasets per page
+    # page = request.GET.get('page')
+    # try:
+    #     page_datasets = paginator.page(page)
+    # except PageNotAnInteger:
+    #     # If page is not an integer, deliver first page.
+    #     page_datasets = paginator.page(1)
+    # except EmptyPage:
+    #     # If page is out of range (e.g. 9999), deliver last page of results.
+    #     page_datasets = paginator.page(paginator.num_pages)
         
     context = {
         'curation_data_ids':curation_data_ids,
         'curation_submitted':curation_submitted,
         'curation_undicided' : curation_undicided,
-        'datasets':page_datasets,
+        # 'datasets':page_datasets,
+        'datasets':datasets,
         'datasets_count':datasets.count(),
         'datasets_submitted':datasets_submitted,
         'datasets_submitted_count':datasets_submitted.count(),
@@ -58,6 +59,11 @@ def index(request,user):
         
 @login_required 
 def curation(request,user,dataset_id):
+    #get the next unsubmitted one
+    curation_data_ids = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,submit = False)
+    datasets_next_unsubmitted = Dataset.objects.filter(pk__in = curation_data_ids) #to do list
+    
+    
     dataset = Dataset.objects.get(pk = dataset_id)
     pubmedid = Dataset.objects.values_list('pubNo',flat = True).get(pk = dataset_id)
     
@@ -83,14 +89,17 @@ def curation(request,user,dataset_id):
     if request.method == "POST":
         curation = Curation.objects.get(user_id = user, data_id = dataset_id, topic_id=topic_id)
         form = CurationFrom(request.POST or None)
-        if form.is_valid() and request.user.is_authenticate:
+        if form.is_valid() and request.user.is_authenticated:
             curation.result = form.cleaned_data.get("result")
             curation.comment = form.cleaned_data.get("comment")
             curation.submit = True
             curation.date = timezone.now()
             curation.save()
             #return redirect("curator/"+str(user))
-            return redirect("index", user = user)
+            if datasets_next_unsubmitted.count() > 0:
+                return HttpResponseRedirect("curator/"+str(user)+"/datasets/"+str(datasets_next_unsubmitted[0].id))
+            else:
+                return redirect("index", user = user)
         else:
             return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
     else:
