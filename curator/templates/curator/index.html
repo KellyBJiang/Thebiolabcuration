@@ -1,5 +1,6 @@
 {% extends "administrator/header.html" %}
 {% block content %}
+	{% if request.user.is_authenticated %}
 		<!--navbar-->
 		<nav class="navbar navbar-default" style="background-color: #e3f2fd;">
 		  <div class="container-fluid">                                                                                                                                         
@@ -19,6 +20,17 @@
 			</ul>    
 			</div>
 		</nav>
+	
+		<div class="row">
+			<div class = "container">
+				<input type="text" name="dataset number" class="form-control" placeholder="Desired datasets shown per page">	
+				<button type="submit">Apply</button>	
+			</div>
+			
+		</div>
+		
+	
+		
 		<div class="row">
 			<div id="display">
 				
@@ -37,7 +49,7 @@
                 "<div class='row'>"+
 					"<div class='container-fluid'>"+
         	        	"<ul class='list-grpup'>"+
-        	        		"<h5>Welcome {{user.username}}, you have {{datasets.count}} assigments:</h5>"+
+        	        		"<h5>Welcome  {{user.username}}, you have {{datasets_count}} assigments:</h5>"+
 			  	    		"{% for data in datasets %}"+
 								"<li class='list-group-item'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'><table class='table' style='margin-bottom:0px ;'><tr><td>{{data.accNo}}</td><td align='left'>{{data.title}}</td><td>{{data.date}}</td></tr></table></a></li>"+
 			  	    		"{% endfor%}"+
@@ -78,4 +90,42 @@
 
     }
    </script>
+
+
+
+
+<div class="row">
+	<div class="text-center">
+		<div class="pagination" >
+		{% if datasets.has_other_pages %}
+			<ul class="pagination">
+				{% if datasets.has_previous %}
+					<li><a href="?page={{ datasets.previous_page_number }}">&laquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&laquo;</span></li>
+				{% endif %}
+					
+				{% for i in datasets.paginator.page_range %}
+					{% if users.number == i %}
+						<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+					{% else %}
+					    <li><a href="?page={{ i }}">{{ i }}</a></li>
+					{% endif %}
+				{% endfor %}
+				
+				{% if datasets.has_next %}
+					<li><a href="?page={{ datasets.next_page_number }}">&raquo;</a></li>
+				{% else %}
+					<li class="disabled"><span>&raquo;</span></li>
+				{% endif %}
+			</ul>
+		{% endif %}
+		</div>
+	</div>
+</div>
+
+
+{% else %}
+<p>You must login first</p>
+{% endif %}
 {% endblock %}		

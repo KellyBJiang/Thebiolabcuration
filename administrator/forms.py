@@ -8,7 +8,7 @@ from django import forms
 
     
 class UserRegisterForm(UserCreationForm):
-    email = EmailField(label = 'Email address',help_text=_("Required, but never shown."))
+    email = EmailField(label = 'Email address',help_text=_("Required. You will occasionally receive account related emails. "))
     class Meta:
         model = User
         fields = [
