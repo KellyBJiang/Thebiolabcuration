@@ -24,7 +24,6 @@ class Topic(models.Model):
         return self.topic
         
 class Dataset(models.Model) :
-    topic_id =  models.ForeignKey('Topic',on_delete=models.CASCADE,)
     title = models.TextField(default=None, blank=True, null=True)
     accNo = models.TextField(default=None, blank=True, null=True)
     pubNo = models.TextField(default=None, blank=True, null=True)
@@ -42,8 +41,7 @@ class Curation(models.Model):
     BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
     topic_id = models.ForeignKey('Topic',on_delete=models.CASCADE,)
     data_id = models.ForeignKey('Dataset', on_delete = models.CASCADE,)
-    user_id = models.ForeignKey(User,on_delete = models.CASCADE,)
-    #user_id = models.ForeignKey('User', on_delete = models.CASCADE,) 
+    user_id = models.ForeignKey(User)
     result = models.CharField(max_length=1,choices=RESULT_CHOICES, default="N")
     comment = models.TextField(default="Leave your Comment", blank=True, null=True)
     submit = models.BooleanField(default = False)
