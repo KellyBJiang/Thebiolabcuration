@@ -4,7 +4,7 @@
     <!--navbar-->
     <!--<nav class="navbar navbar-default" style="background-color: #e3f2fd;">-->
         <div class="container-fluid">
-            <ul class="nav nav-pills">
+            <ul class="nav navbar-nav">
                 <li >
                     <a href="/curator/{{user_id}}"><img src="https://cdn4.iconfinder.com/data/icons/system-ui-set/512/triangle-arrow-left-back-last-vector-ui-128.png" style="height:20px; width=100%"></img>Back to Assignment</a>
                 </li>
@@ -12,7 +12,7 @@
                 <li><a data-toggle="pill" href="#menu2">Pubmed</a></li>
                 <li><a data-toggle="pill" href="#menu3">PMC</a></li>
               </ul>
-            <ul class="nav navbar-nav navbar-right"> 
+            <ul class="nav navbar-nav navbar-right "> 
 				<li> <a href="/logout/">Log Out </a></li>
 			</ul> 
         </div>
@@ -25,13 +25,15 @@
     	    <div class="pull-right">
                     <input type="button" class="btn btn-info" value="Back" onclick="history.back();">
                     <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">
+                    
             </div>
+            
             
 			<!--iframe-->
     	    <div class="embed-responsive embed-responsive-4by3">
-                <div class="tab-content">
+                <div class="tab-content" >
                     <div id="menu1" class="tab-pane fade in active">
-                        <iframe id="renderpage_ncbi" style="width: 100%; height: 100%; position: absolute; "  scrolling="yes" src="">
+                        <iframe id="renderpage_ncbi" style="transform: scale(1.2);transform-origin: 50% 0; width: 100%; height: 100%; position: absolute;"  scrolling="yes" src="">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
@@ -45,30 +47,34 @@
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
-              </div>
+                </div>
     	    </div>
-	        
-	        
-	        
+    	    
+    	    
+    	    
 	        <script>
-	            var info = '{{dataset.content|escapejs}}';
-                var obj = JSON.parse(info);
-                var ncbinum = obj['Accession'];
-                var pubnum = obj['PMID'];
+                var ncbinum ='{{dataset.accNo}}';
                 var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
                 document.getElementById('renderpage_ncbi').src = ncbi_str;
+                var pubnum = '{{dataset.pubNo}}';
                 var pub_str = "https://www.ncbi.nlm.nih.gov/pubmed/"+pubnum;
                 document.getElementById('renderpage_pubmed').src = pub_str;
                 var pmcinfo = JSON.parse('{{jsonString|escapejs}}');
                 var pmcnum = pmcinfo.records[0].pmcid;
                 var pmc_str ="https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum;
                 document.getElementById('renderpage_pmc').src = pmc_str;
+                
+            
+                
+                // TEST ON HIGH LIGHT
+
+
 	        </script>
 	   	   </div>
 	   <div class="col-sm-3">
-	        <form method='POST' action=''>
+	        <form method='POST' action='' style="position:fixed;">
 	            {% csrf_token %}
-	             <div class = "row">
+	             <div class ="row">
 	                <h3>Curation Topic: {{topic.topic}}</h3><br>
 	                
 	                <h4> Is this dataset relavent to the curation topic? </h4>
@@ -93,6 +99,7 @@
                     <input type="submit"  class="btn btn-info"  value="Submit" onclick="">    
                 </div>
     		        <!--{{form.as_p}}-->
+    		      
     		    
             </form>	
 	    </div>

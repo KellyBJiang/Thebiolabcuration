@@ -1,0 +1,1 @@
+web: gunicorn curation_website.wsgi --log-file -

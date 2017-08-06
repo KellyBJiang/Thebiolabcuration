@@ -40,3 +40,8 @@ https://docs.djangoproject.com/en/1.9/intro/tutorial01/
 
 Visit http://docs.c9.io for support, or to learn more about using Cloud9 IDE.
 To watch some training videos, visit http://www.youtube.com/user/c9ide
+
+
+To load file from terminal:
+1.mysql -hlocalhost -ucuration -p --local-infile 
+2.load data local infile '/home/ubuntu/workspace/administrator/migrations/tmp/test2.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo);

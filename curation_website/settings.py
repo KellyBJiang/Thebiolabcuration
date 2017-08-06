@@ -86,14 +86,44 @@ WSGI_APPLICATION = 'curation_website.wsgi.application'
 #}
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'OPTIONS': {
+#             'read_default_file': '/home/ubuntu/config/my.cnf',
+#         },
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'curation_biolab',
+        'USER': 'curation',
+        'PASSWORD': 'curation',
         'OPTIONS': {
             'read_default_file': '/home/ubuntu/config/my.cnf',
         },
     }
 }
+
+
+
+
+
+
+# # start MySQL. Will create an empty database on first start
+# $ mysql-ctl start
+
+# # stop MySQL
+# $ mysql-ctl stop
+
+# # run the MySQL interactive shell
+# $ mysql-ctl cli
+
+
+# https://stackoverflow.com/questions/11990708/error-cant-connect-to-local-mysql-server-through-socket-var-run-mysqld-mysq
 
 
 # Password validation
@@ -133,3 +163,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+

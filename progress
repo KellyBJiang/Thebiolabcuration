@@ -1,0 +1,22 @@
+MySQL Error:
+ERROR 1290 (HY000): The MySQL server is running with the --secure-file-priv option so it cannot execute this statement
+1.find 'etc/mysql/my.cnf' use command to write: sudo vi my.cnf
+2.add:
+----------------------
+[mysqld]
+secure_file_priv = ""
+----------------------
+3. then load the file, the error becomes: 
+ERROR 13 (HY000): Can't get stat of '/var/lib/mysql/curation_biolab/test.cvs' (Errcode: 2)
+ERROR 13 (HY000): Can't get stat of '/administrator/migratons/tmp/test.cvs' (Errcode: 2)
+4.use local-infile
+quit MySQL, start with:
+mysql -hlocalhost -ucuration -p --local-infile  
+loadfile:
+load data local infile '/home/ubuntu/workspace/administrator/migrations/tmp/test2.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo);
+
+
+INSERT INTO administrator_curation (data_id_id, user_id_id, topic_id_id) SELECT id FROM administrator_dataset UNION SELECT id FROM auth_user UNION SELECT id FROM administrator_topic where id=1;
+
+create view tmp as SELECT id FROM administrator_dataset UNION SELECT id FROM auth_user UNION SELECT id FROM administrator_topic where id=1;
+
