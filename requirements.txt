@@ -1,5 +1,6 @@
 backports-abc==0.5
 backports.ssl-match-hostname==3.5.0.1
+bzr==2.7.0.dev1
 BzrTools==2.6.0
 certifi==2017.7.27.1
 chardet==2.0.1
@@ -10,6 +11,7 @@ dj-database-url==0.4.2
 Django==1.9
 django-mssql==1.8
 duplicity==0.6.23
+gunicorn==19.7.1
 html5lib==0.999
 httplib2==0.8
 ipython==1.2.1
