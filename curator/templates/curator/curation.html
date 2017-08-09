@@ -2,21 +2,20 @@
 
 {% block content %}
     <!--navbar-->
-    <!--<nav class="navbar navbar-default" style="background-color: #e3f2fd;">-->
-        <div class="container-fluid">
-            <ul class="nav navbar-nav">
-                <li >
-                    <a href="/curator/{{user_id}}"><img src="https://cdn4.iconfinder.com/data/icons/system-ui-set/512/triangle-arrow-left-back-last-vector-ui-128.png" style="height:20px; width=100%"></img>Back to Assignment</a>
-                </li>
-                <li><a data-toggle="pill" href="#menu1">GEO</a></li>
-                <li><a data-toggle="pill" href="#menu2">Pubmed</a></li>
-                <li><a data-toggle="pill" href="#menu3">PMC</a></li>
-              </ul>
-            <ul class="nav navbar-nav navbar-right "> 
-				<li> <a href="/logout/">Log Out </a></li>
-			</ul> 
-        </div>
-    <!--</nsav>-->
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li >
+                <a href="/curator/{{user_id}}"><img src="https://cdn4.iconfinder.com/data/icons/system-ui-set/512/triangle-arrow-left-back-last-vector-ui-128.png" style="height:20px; width=100%"></img>Back to Assignment</a>
+            </li>
+            <li><a data-toggle="pill" href="#menu1">GEO</a></li>
+            <li id="pub_tab"></li>
+            <li id="pmc_tab"></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right "> 
+			<li> <a href="/logout/">Log Out </a></li>
+		</ul> 
+    </div>
+    
     
     <div class="row">
     	<div class="col-sm-9">
@@ -25,9 +24,7 @@
     	    <div class="pull-right">
                     <input type="button" class="btn btn-info" value="Back" onclick="history.back();">
                     <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">
-                    
             </div>
-            
             
 			<!--iframe-->
     	    <div class="embed-responsive embed-responsive-4by3">
@@ -38,70 +35,94 @@
                         </iframe>
                     </div>
                     <div id="menu2" class="tab-pane fade">
-                      <iframe id="renderpage_pubmed" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="">
+                        <iframe id="renderpage_pubmed" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
                     <div id="menu3" class="tab-pane fade">
-                      <iframe id="renderpage_pmc" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="">
+                        <iframe id="renderpage_pmc" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
                 </div>
     	    </div>
-    	    
-    	    
-    	    
-	        <script>
-                var ncbinum ='{{dataset.accNo}}';
-                var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
-                document.getElementById('renderpage_ncbi').src = ncbi_str;
-                var pubnum = '{{dataset.pubNo}}';
-                var pub_str = "https://www.ncbi.nlm.nih.gov/pubmed/"+pubnum;
-                document.getElementById('renderpage_pubmed').src = pub_str;
-                var pmcinfo = JSON.parse('{{jsonString|escapejs}}');
-                var pmcnum = pmcinfo.records[0].pmcid;
+	        
+        </div>
+        <div class="col-sm-3">
+            <!--<form method='POST' action='' style="position:fixed;">-->
+            <!--    {% csrf_token %}-->
+            <!--    <div class ="row">-->
+            <!--        <h3>Curation Topic: {{topic.topic}}</h3><br>-->
+            <!--        <h4> Is this dataset relavent to the curation topic? </h4>-->
+            <!--        <ul id="ul_relavent">-->
+            <!--        {% for radio in form.result %}-->
+            <!--            {{ radio }}-->
+            <!--            <div class="check"><div class="inside"></div></div>-->
+            <!--        {% endfor %}-->
+            <!--        </ul>-->
+            <!--    </div>-->
+            <!--    <div class = row"">-->
+            <!--        {{form.comment}}<br>-->
+            <!--    </div>-->
+            <!--    <br>-->
+            <!--    <div class = "row">-->
+            <!--        <input type="submit"  class="btn btn-info"  value="Submit" onclick="">    -->
+            <!--    </div>-->
+            <!--</form>	-->
+            
+            <div class="row">
+                <h5>TEST for highlight</h5>
+             <!--added an id of search to the input element-->
+            <input id="search" type="text" name="page_no" size="3"/> 
+            
+            <!--changed input type to button and added an id of go-->           
+            <input id="go" type="button" name="goto" value="Go"/>    
+            <h3 id="keyw"></h3>
+
+                
+            </div>
+            
+        </div>
+    </div>
+    <script>
+        var ncbinum ='{{dataset.accNo}}';
+        var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
+        document.getElementById('renderpage_ncbi').src = ncbi_str;
+        var pubnum = '{{dataset.pubNo}}';
+        var pub_str = "https://www.ncbi.nlm.nih.gov/pubmed/"+pubnum;
+        if(pubnum.length > 1)
+        {
+            document.getElementById('renderpage_pubmed').src = pub_str;
+            document.getElementById('pub_tab').innerHTML="<a data-toggle='pill' href='#menu2'>Pubmed</a>";
+            var pmcinfo = JSON.parse('{{jsonString|escapejs}}');
+            var pmcnum = pmcinfo.records[0].pmcid;
+            if(pmcnum != null)
+            {
                 var pmc_str ="https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum;
                 document.getElementById('renderpage_pmc').src = pmc_str;
-                
-            
-                
-                // TEST ON HIGH LIGHT
+                document.getElementById('pmc_tab').innerHTML="<a data-toggle='pill' href='#menu3'>PMC</a>";
+            }
+        }
+        var go = document.getElementById("go").onclick = function(){//begin function
 
-
-	        </script>
-	   	   </div>
-	   <div class="col-sm-3">
-	        <form method='POST' action='' style="position:fixed;">
-	            {% csrf_token %}
-	             <div class ="row">
-	                <h3>Curation Topic: {{topic.topic}}</h3><br>
-	                
-	                <h4> Is this dataset relavent to the curation topic? </h4>
-                    <ul id="ul_relavent">
-                        {% for radio in form.result %}
-                            <!--<li class="li_relavent">
-                                <input id="id_name_{{forloop.counter0}}",name="selector",type="radio">
-                                <label for="id_name_{{forloop.counter0}}">{{radio.choice_value}}</label>
-                            -->  
-                                {{ radio }}
-                                <div class="check"><div class="inside"></div></div>
-                            <!--</li>-->
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class = row"">
-                    {{form.comment}}<br>
-                    
-                </div>
-                <br>
-                <div class = "row">
-                    <input type="submit"  class="btn btn-info"  value="Submit" onclick="">    
-                </div>
-    		        <!--{{form.as_p}}-->
-    		      
-    		    
-            </form>	
-	    </div>
-    </div>
+        //get the search value
+        var search = document.getElementById("search").value;
+        //get the html of the iframe(must be in the same domain)
+        var iframe = document.getElementById("renderpage_ncbi").contentDocument.body;
+        document.getElementById("keyw").innerHTML=iframe;
+        /*create a new RegExp object using search variable as a parameter,
+         the g option is passed in so it will find more than one occurence of the
+         search parameter*/                                               
+         var result = new RegExp(search, 'g');
+        
+        
+        
+        
+         //set the html of the iframe making the found items bold
+         iframe.innerHTML = iframe.innerHTML.replace(result,"<b>" + search + "</b>" );     
+        
+        
+        
+        };//end function
+    </script>
 {% endblock %}

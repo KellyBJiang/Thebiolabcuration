@@ -26,7 +26,7 @@ def login(request):
 def logged_in(request):
     #role judgement
     if request.user.is_staff: #admin
-         return HttpResponseRedirect('/admin/%d/'%request.user.id)
+         return HttpResponseRedirect('/admin/')
     else: #curator
         return HttpResponseRedirect('/curator/%d/'%request.user.id)
 
