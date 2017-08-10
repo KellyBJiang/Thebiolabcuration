@@ -1,0 +1,131 @@
+{% extends "administrator/header.html" %}
+{% block content %}
+
+
+
+    <!--Welcome words-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h3 style="color:#214f7c;">Assign datasets to curators:</h3> 
+            <p>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</p> 
+        </div>
+    </div>
+    
+    
+    <!--Select Users-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h4>Please select curators:</h4>    
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-xs-1"></div>
+        <div class="col-xs-4">
+            
+            <select name="from[]" id="user" class="form-control" size="8" multiple="multiple">
+                {% for user in users %}
+					<option value={{user.pk}}>{{user.username}}</option>
+		  	    {% endfor %}
+                <!--<option value="1">Item 1</option>-->
+                <!--<option value="2">Item 5</option>-->
+                <!--<option value="2">Item 2</option>-->
+                <!--<option value="2">Item 4</option>-->
+                <!--<option value="3">Item 3</option>-->
+            </select>
+        </div>
+        
+        <div class="col-xs-2">
+            <button type="button" id="user_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+            <button type="button" id="user_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+            <button type="button" id="user_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+            <button type="button" id="user_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+        </div>
+        
+        <div class="col-xs-4">
+            <select name="to[]" id="user_to" class="form-control" size="8" multiple="multiple"></select>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+    
+    <br>
+    <!--Select datasets-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h4>Please select datasets:</h4>
+        </div>
+    </div>
+    <div class="row">
+        
+         <div class="col-xs-1"></div>
+        <div class="col-xs-4">
+             
+            <select name="from[]" id="dataset" class="form-control" size="20" multiple="multiple">
+                {% for data in datasets %}
+					<option value={{data.pk}}>{{data.accNo}}<span>-</span>{{data.title}}</option>
+		  	    {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-xs-2">
+            <button type="button" id="dataset_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+            <button type="button" id="dataset_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+            <button type="button" id="dataset_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+            <button type="button" id="dataset_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+        </div>
+        
+        <div class="col-xs-4">
+            <select name="to[]" id="dataset_to" class="form-control" size="20" multiple="multiple"></select>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+             <button type="button" id="create" class="btn btn-primary" onclick="create_curation()">Create Curation</button>
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('#user').multiselect({
+            search: {
+                left: '<input type="text" name="s1" class="form-control" placeholder="Search..." />',
+                right: '<input type="text" name="s1" class="form-control" placeholder="Search..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 3;
+            }
+        });
+        
+        $('#dataset').multiselect({
+            search: {
+                left: '<input type="text" name="s2" class="form-control" placeholder="Search..." />',
+                right: '<input type="text" name="s2" class="form-control" placeholder="Search..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 3;
+            }
+        });
+        
+        var selectArr = []; 
+
+        $('#user_to').each(function() {
+            selectArr.push($(this).val());
+        });
+        console.log(selectArr);
+
+
+
+    });
+   
+</script>
+
+{% endblock %}

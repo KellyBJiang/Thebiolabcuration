@@ -21,8 +21,9 @@ from administrator import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^curator/',include('curator.urls')),
-    url(r'^$',include('administrator.urls')),
+    url(r'^',include('administrator.urls')),
     url(r'^logged_in/',views.logged_in, name = 'logged_in'),
     url(r'^logout/',views.logged_out, name = 'logged_out'),
-    url(r'^register/',views.register, name='register')
+    url(r'^register/',views.register, name='register'),
+
 ]

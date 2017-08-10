@@ -15,17 +15,13 @@
 			<li> <a href="/logout/">Log Out </a></li>
 		</ul> 
     </div>
-    
-    
     <div class="row">
     	<div class="col-sm-9">
-    	    
     	    <!--Back and forward button-->
     	    <div class="pull-right">
                     <input type="button" class="btn btn-info" value="Back" onclick="history.back();">
                     <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">
             </div>
-            
 			<!--iframe-->
     	    <div class="embed-responsive embed-responsive-4by3">
                 <div class="tab-content" >
@@ -49,39 +45,28 @@
 	        
         </div>
         <div class="col-sm-3">
-            <!--<form method='POST' action='' style="position:fixed;">-->
-            <!--    {% csrf_token %}-->
-            <!--    <div class ="row">-->
-            <!--        <h3>Curation Topic: {{topic.topic}}</h3><br>-->
-            <!--        <h4> Is this dataset relavent to the curation topic? </h4>-->
-            <!--        <ul id="ul_relavent">-->
-            <!--        {% for radio in form.result %}-->
-            <!--            {{ radio }}-->
-            <!--            <div class="check"><div class="inside"></div></div>-->
-            <!--        {% endfor %}-->
-            <!--        </ul>-->
-            <!--    </div>-->
-            <!--    <div class = row"">-->
-            <!--        {{form.comment}}<br>-->
-            <!--    </div>-->
-            <!--    <br>-->
-            <!--    <div class = "row">-->
-            <!--        <input type="submit"  class="btn btn-info"  value="Submit" onclick="">    -->
-            <!--    </div>-->
-            <!--</form>	-->
-            
-            <div class="row">
-                <h5>TEST for highlight</h5>
-             <!--added an id of search to the input element-->
-            <input id="search" type="text" name="page_no" size="3"/> 
-            
-            <!--changed input type to button and added an id of go-->           
-            <input id="go" type="button" name="goto" value="Go"/>    
-            <h3 id="keyw"></h3>
-
-                
+            <div class="row"  style="position:fixed;">
+                <form method='POST' action=''>
+                    {% csrf_token %}
+                   <div class ="row">
+                        <h3>Curation Topic: {{topic.topic}}</h3><br>
+                        <h4> Is this dataset relavent to the curation topic? </h4>
+                        <ul id="ul_relavent">
+                        {% for radio in form.result %}
+                            {{ radio }}
+                            <div class="check"><div class="inside"></div></div>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    <div class = row"">
+                        {{form.comment}}<br>
+                    </div>
+                    <br>
+                    <div class = "row">
+                        <input type="submit"  class="btn btn-info"  value="Submit" onclick="">    
+                    </div>
+                </form>	
             </div>
-            
         </div>
     </div>
     <script>
@@ -103,26 +88,5 @@
                 document.getElementById('pmc_tab').innerHTML="<a data-toggle='pill' href='#menu3'>PMC</a>";
             }
         }
-        var go = document.getElementById("go").onclick = function(){//begin function
-
-        //get the search value
-        var search = document.getElementById("search").value;
-        //get the html of the iframe(must be in the same domain)
-        var iframe = document.getElementById("renderpage_ncbi").contentDocument.body;
-        document.getElementById("keyw").innerHTML=iframe;
-        /*create a new RegExp object using search variable as a parameter,
-         the g option is passed in so it will find more than one occurence of the
-         search parameter*/                                               
-         var result = new RegExp(search, 'g');
-        
-        
-        
-        
-         //set the html of the iframe making the found items bold
-         iframe.innerHTML = iframe.innerHTML.replace(result,"<b>" + search + "</b>" );     
-        
-        
-        
-        };//end function
     </script>
 {% endblock %}

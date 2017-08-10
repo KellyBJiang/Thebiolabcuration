@@ -60,11 +60,20 @@ def curation(request,user,dataset_id):
     cur_submit = Curation.objects.values_list('submit',flat = True).get(user_id = user, data_id = dataset_id)
     #which template to use:
     template = loader.get_template('curator/curation.html')
+    
     #Get data from ID convertor
     convert_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+pubmedid+'&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit'
     convert_pmc=requests.get(convert_url)#get the jsonfile including the converted pmc_id 
     jsonString=convert_pmc.content # pmc id is under the tag content
-
+    
+    
+    #if request.method == "POST" and 'highlight' in request.POST:
+    url='https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE84724'
+    iframe = requests.get(url).content
+        
+        
+        
+        
     if request.method == "POST":
         curation = Curation.objects.get(user_id = user, data_id = dataset_id, topic_id=topic_id)
         form = CurationFrom(request.POST or None)
@@ -91,5 +100,6 @@ def curation(request,user,dataset_id):
                 'cur_result':cur_result,
                 'cur_submit':cur_submit,
                 'jsonString':jsonString,
+                'iframe_content':iframe,
             }
         return HttpResponse(template.render(context, request))

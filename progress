@@ -35,7 +35,7 @@ INSERT INTO administrator_curation (topic_id_id, user_id_id, data_id_id,RESULT,s
 SELECT *,
        'N',
        0,
-       "Comment"
+       ""
 FROM
   (SELECT id AS tid
    FROM administrator_topic) c
@@ -51,8 +51,30 @@ CROSS JOIN
       
 # 08/09/2017
     1.iframe Issue:
-        Uncaught DOMException: Failed to read the 'contentDocument' property from 'HTMLIFrameElement': 
-        Blocked a frame with origin "https://curation-website-mitiao.c9users.io" from accessing a cross-origin frame.
-        at HTMLInputElement.document.getElementById.onclick (https://curation-website-mitiao.c9users.io/curator/2/dataset/13/:160:64) 
-        
+        - iframe doesn't have content:
+            This line works by using https instead of http:
+            <iframe width="560" height="315" src="https://ryanleetcode.blogspot.com/2015/07/backtracking.html" frameborder="0" allowfullscreen></iframe> 
+        - when trying to get the content from the iframe and highlight it:
+            ERROR:
+                Uncaught DOMException: Failed to read the 'contentDocument' property from 'HTMLIFrameElement': 
+                Blocked a frame with origin "https://curation-website-mitiao.c9users.io" from accessing a cross-origin frame.
+                at HTMLInputElement.document.getElementById.onclick (https://curation-website-mitiao.c9users.io/curator/2/dataset/13/:160:64) 
+            SOLUTION: unsolved
+                
+#08/10/2017
+    1. Add a page--steps 
+        -add url.py(both local and global url)
+        -add views.py: def model name, return .html
+        -add the html page in the template folder: <a href="/ad/assign/">Assign Curation</a>
+        -add a link from another page.
     
+#08/11/2017
+    1.add css and  js file in  in django:
+        - add the files in the static folder in the app.
+        - drag the files in.
+        - Add the following to the html head.
+            <!--CSS in static for assign page-->
+	        <link rel="stylesheet" href="{% static 'administrator/css/style.css' %}" />
+	        <script type="text/javascript" src="{% static 'administrator/multiselect.js' %}"></script>
+    2. add mysql in django:
+        Cars.objects.raw('SELECT max(id), SubStr(brand,1,1) AS letter, brand FROM myapp_cars GROUP BY substr(brand,1,1)')

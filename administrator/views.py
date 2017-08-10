@@ -4,6 +4,7 @@ from django.template import loader
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 #from django.contrib.auth.forms import UserCreationForm
 
 # from .forms import MyUserCreationForm
@@ -51,3 +52,20 @@ def register(request):
         }
         return render(request, "administrator/register.html",context)
     
+
+def assign(request):
+    datasets = Dataset.objects.all()
+    users = User.objects.all()
+    context = {
+        'users': users,
+        'datasets': datasets,
+        'datasets_count': datasets.count(),
+    }
+    template = loader.get_template("administrator/assign.html")
+    return HttpResponse(template.render(context, request))
+    
+    
+    
+    
+def ad(request):
+    return render(request, "administrator/ad.html")
