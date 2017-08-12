@@ -12,7 +12,29 @@
         </div>
     </div>
     
+    <!--Select Topic-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h4>Please select the curation topic:</h4>    
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+            
+            <select id = "topic">
+                {% for topic in topics %}
+					<option value={{topic.pk}}>{{topic.topic}}</option>
+		  	    {% endfor %}
+            <select>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
     
+    <br>
+
     <!--Select Users-->
     <div class="row">
         <div class="col-xs-1"></div>
@@ -29,11 +51,6 @@
                 {% for user in users %}
 					<option value={{user.pk}}>{{user.username}}</option>
 		  	    {% endfor %}
-                <!--<option value="1">Item 1</option>-->
-                <!--<option value="2">Item 5</option>-->
-                <!--<option value="2">Item 2</option>-->
-                <!--<option value="2">Item 4</option>-->
-                <!--<option value="3">Item 3</option>-->
             </select>
         </div>
         
@@ -87,21 +104,22 @@
     <div class="row">
         <div class="col-xs-1"></div>
         <div class="col-xs-11">
-             <button type="button" id="create" class="btn btn-primary" onclick="create_curation()">Create Curation</button>
+             <button type="button" id="create" class="btn btn-primary">Create Curation</button>
         </div>
     </div>
 
-
+<h1 id="message"></h1>
 
 <script type="text/javascript">
     jQuery(document).ready(function($) {
+        
         $('#user').multiselect({
             search: {
                 left: '<input type="text" name="s1" class="form-control" placeholder="Search..." />',
                 right: '<input type="text" name="s1" class="form-control" placeholder="Search..." />',
             },
             fireSearch: function(value) {
-                return value.length > 3;
+                return value.length > 1;
             }
         });
         
@@ -111,16 +129,64 @@
                 right: '<input type="text" name="s2" class="form-control" placeholder="Search..." />',
             },
             fireSearch: function(value) {
-                return value.length > 3;
+                return value.length > 1;
             }
         });
         
-        var selectArr = []; 
 
-        $('#user_to').each(function() {
-            selectArr.push($(this).val());
-        });
-        console.log(selectArr);
+        $("#topic").cSelect();
+        
+        
+        
+        var selected_topic=0;        
+        var selected_users = new Array;
+        var selected_datasets = new Array;
+       
+        document.getElementById('create').onclick=
+            function(){
+                selected_topic = $("#topic").val();   
+                 
+                
+                 var users = $('#user_to option');
+                 users.each(function(){
+                      selected_users.push($(this).val());
+                });
+                
+                
+                var datasets = $('#dataset_to option');
+                datasets.each(function(){
+                      selected_datasets.push($(this).val());
+                });
+                
+                console.log("topic"+selected_topic);
+                console.log("users"+selected_users);
+                console.log("datasets"+selected_datasets);
+                if(selected_topic.length == 0)
+                {
+                    alert("Please select a topic");
+                }
+                else if (selected_users.length == 0)
+                {
+                    alert("Please select the curators");
+                }
+                else if(selected_datasets.length == 0)
+                {
+                    alert("please select the datasets for curation");
+                }
+                $.ajax({
+                 type:"POST",
+                 url:"/ad/assign/", // same with the url in 'urls.py'
+                 data: {
+                     'selected_datasets[]': selected_datasets, //the array to be post
+                     'selected_users[]': selected_users, 
+                     'selected_topic':selected_topic,
+                     csrfmiddlewaretoken: "{{ csrf_token }}",  //to avoid Error:POST 403 forbidden
+                 },
+            }); 
+            }; 
+            
+            
+          
 
 
 

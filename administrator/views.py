@@ -56,12 +56,30 @@ def register(request):
 def assign(request):
     datasets = Dataset.objects.all()
     users = User.objects.all()
+    topics = Topic.objects.all()
     context = {
         'users': users,
         'datasets': datasets,
-        'datasets_count': datasets.count(),
+        'topics':topics
     }
     template = loader.get_template("administrator/assign.html")
+    # Get the selected id of topic, user,  datasets
+    selected_datasets=request.POST.getlist('selected_datasets[]')
+    selected_topic = request.POST.get('selected_topic')
+    selected_users = request.POST.getlist('selected_users[]')
+    # print selected_datasets
+    # print selected_topic
+    # print selected_users
+    if len(selected_datasets) != 0 and len(selected_users)!=0:
+        #SEL_DATASETS = Dataset.objects.values_list('id',flat=True).filter(pk__in = selected_datasets)
+        #Create curation table
+        curation = [ ]
+        for sel_d in selected_datasets:
+            for sel_u in selected_users:
+                curation.append([sel_d,sel_u,selected_topic])
+        print curation        
+        
+    
     return HttpResponse(template.render(context, request))
     
     

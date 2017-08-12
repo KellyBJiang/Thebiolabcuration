@@ -60,15 +60,14 @@ CROSS JOIN
                 Blocked a frame with origin "https://curation-website-mitiao.c9users.io" from accessing a cross-origin frame.
                 at HTMLInputElement.document.getElementById.onclick (https://curation-website-mitiao.c9users.io/curator/2/dataset/13/:160:64) 
             SOLUTION: unsolved
-                
-#08/10/2017
-    1. Add a page--steps 
+
+    2. Add a page--steps 
         -add url.py(both local and global url)
         -add views.py: def model name, return .html
         -add the html page in the template folder: <a href="/ad/assign/">Assign Curation</a>
         -add a link from another page.
     
-#08/11/2017
+#08/10/2017
     1.add css and  js file in  in django:
         - add the files in the static folder in the app.
         - drag the files in.
@@ -78,3 +77,21 @@ CROSS JOIN
 	        <script type="text/javascript" src="{% static 'administrator/multiselect.js' %}"></script>
     2. add mysql in django:
         Cars.objects.raw('SELECT max(id), SubStr(brand,1,1) AS letter, brand FROM myapp_cars GROUP BY substr(brand,1,1)')
+        
+#08/11/2017
+    1. Add "POST" from html to django view:
+        - add ajax in javascript function:
+            $.ajax({
+                 type:"POST",
+                 url:"/ad/assign/",                                         // same with the url in 'urls.py'
+                 data: {
+                      'selected_datasets[]': selected_datasets,              //the array to be post
+                      'selected_topic':selected_topic,                       //the variable to be post
+                      csrfmiddlewaretoken: "{{ csrf_token }}",               //to avoid Error:POST 403 forbidden
+                 },
+        -in views.py, add the following to get the array value, this works for both a single value and an array.
+            selected_datasets=request.POST.getlist('selected_datasets[]') 
+            selected_topic = request.POST.get('selected_topic')
+            
+            print selected_datasets
+            print selected_topic
