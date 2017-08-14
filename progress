@@ -95,3 +95,19 @@ CROSS JOIN
             
             print selected_datasets
             print selected_topic
+
+#08/13/2017
+    1.Django with database:
+        https://docs.djangoproject.com/en/1.11/topics/db/queries/
+        https://docs.djangoproject.com/en/1.11/ref/models/querysets/
+
+       			
+    	        			// "{% for c in  c_ids%}"+
+    	        			// 	"{% for data in datasets %}"+
+    	        			// 		"{% if data.id == c.data_id %}"+
+    	        			// 			"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{c.id}}'>{{data.title}}</a></td></tr>"+
+    	        			// 		"{% endif %}"+
+    	        			// 	"{% endfor %}"+
+    	        			// "{% endfor%}"+
+    	        		
+    	        		

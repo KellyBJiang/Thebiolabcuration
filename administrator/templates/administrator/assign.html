@@ -103,11 +103,15 @@
     
     <div class="row">
         <div class="col-xs-1"></div>
-        <div class="col-xs-11">
-             <button type="button" id="create" class="btn btn-primary">Create Curation</button>
+        <div class="col-xs-3">
+            <button type="button"  id="assign" class="btn btn-primary">Assign Curation</button>
         </div>
     </div>
+    <!--<div class="row">-->
+    <!--    <div class="alert" id="assign_result"></div>-->
+    <!--</div>-->
 
+    
 <h1 id="message"></h1>
 
 <script type="text/javascript">
@@ -136,17 +140,12 @@
 
         $("#topic").cSelect();
         
-        
-        
         var selected_topic=0;        
         var selected_users = new Array;
         var selected_datasets = new Array;
        
-        document.getElementById('create').onclick=
-            function(){
+        document.getElementById('assign').onclick=function(){
                 selected_topic = $("#topic").val();   
-                 
-                
                  var users = $('#user_to option');
                  users.each(function(){
                       selected_users.push($(this).val());
@@ -174,22 +173,17 @@
                     alert("please select the datasets for curation");
                 }
                 $.ajax({
-                 type:"POST",
-                 url:"/ad/assign/", // same with the url in 'urls.py'
-                 data: {
-                     'selected_datasets[]': selected_datasets, //the array to be post
-                     'selected_users[]': selected_users, 
-                     'selected_topic':selected_topic,
-                     csrfmiddlewaretoken: "{{ csrf_token }}",  //to avoid Error:POST 403 forbidden
-                 },
-            }); 
+                     type:"POST",
+                     url:"/ad/assign/", // same with the url in 'urls.py'
+                     data: {
+                         'selected_datasets[]': selected_datasets, //the array to be post
+                         'selected_users[]': selected_users, 
+                         'selected_topic':selected_topic,
+                         csrfmiddlewaretoken: "{{ csrf_token }}",  //to avoid Error:POST 403 forbidden
+                     },
+                }); 
+                window.location.reload(true);
             }; 
-            
-            
-          
-
-
-
     });
    
 </script>

@@ -38,11 +38,15 @@
      	        	"<table id='to_do' class='table table-hover'>"+
      	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
     	        		"<tbody>"+
-			  	    		"{% for data in datasets %}"+
-								"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'>{{data.title}}</a></td></tr>"+
-			  	    		"{% endfor %}"+
+    	        		    "{% for c in  c_ids%}"+
+    	        				"{% for data in datasets %}"+
+    	        					"{% if data.id == c.data_id_id %}"+
+    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
+    	        					"{% endif %}"+
+    	        				"{% endfor %}"+
+    	        			"{% endfor%}"+
 			  			"</tbody>"+
-			  		"</table>"
+			  		"</table>";
        }
         if(clicked_id==1)
         {
@@ -52,11 +56,18 @@
        	        	"<table id='submitted' class='table'>"+
        	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
        	        		"<tbody>"+
-			  	    		"{% for data in datasets_submitted %}"+
-								"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'>{{data.title}}</a></td></tr>"+
-			  	    		"{% endfor %}"+
+       	        			"{% for c in  c_s %}"+
+       	    	        		"{% for data in datasets_submitted %}"+
+    	        					"{% if data.id == c.data_id_id %}"+
+    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
+    	        					"{% endif %}"+
+    	        				"{% endfor %}"+
+    	        			"{% endfor%}"+
+			  	  //  		"{% for data in datasets_submitted %}"+
+								// "<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'>{{data.title}}</a></td></tr>"+
+			  	  //  		"{% endfor %}"+
 			  			"</tbody>"+
-			  		"</table>"
+			  		"</table>";
         }
         if(clicked_id==2)
         {
@@ -65,11 +76,15 @@
        	        	"<table id='undecided' class='table'>"+
        	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
        	        		"<tbody>"+
-		  	    			"{% for data in datasets_undicided %}"+
-								"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}'>{{data.title}}</a></td></tr>"+
-		  	    			"{% endfor %}"+
+       	        			"{% for c in c_u %}"+
+       	    	        		"{% for data in datasets_undicided %}"+
+    	        					"{% if data.id == c.data_id_id %}"+
+    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
+    	        					"{% endif %}"+
+    	        				"{% endfor %}"+
+    	        			"{% endfor%}"+
 			  			"</tbody>"+
-			  		"</table>"
+			  		"</table>";
         }
        $('.table').DataTable({
 		        "pagingType": "full_numbers",
