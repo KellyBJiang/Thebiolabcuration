@@ -89,7 +89,7 @@ def curation(request,user,dataset_id,curation_id):
     #if request.method == "POST" and 'highlight' in request.POST:
     url='https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE84724'
     iframe = requests.get(url).content
-    print iframe
+    
     if request.method == "POST":
         curation = Curation.objects.get(user_id = user, data_id = dataset_id, topic_id=topic_id)
         form = CurationFrom(request.POST or None)

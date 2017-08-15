@@ -46,8 +46,10 @@ class Curation(models.Model):
     comment = models.TextField(default="Leave your Comment", blank=True, null=True)
     submit = models.BooleanField(default = False)
     date = models.DateTimeField(default=None, blank=True, null=True)
+    
     # def __str__(self):
     #     return self.comment
+    
     def __unicode__(self):
          return u'Comment: %s' % self.comment
     
