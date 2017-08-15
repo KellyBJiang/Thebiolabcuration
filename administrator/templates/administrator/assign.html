@@ -1,0 +1,191 @@
+{% extends "administrator/header.html" %}
+{% block content %}
+
+
+
+    <!--Welcome words-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h3 style="color:#214f7c;">Assign datasets to curators:</h3> 
+            <p>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</p> 
+        </div>
+    </div>
+    
+    <!--Select Topic-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h4>Please select the curation topic:</h4>    
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-xs-1"></div>
+        <div class="col-xs-10">
+            
+            <select id = "topic">
+                {% for topic in topics %}
+					<option value={{topic.pk}}>{{topic.topic}}</option>
+		  	    {% endfor %}
+            <select>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+    
+    <br>
+
+    <!--Select Users-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h4>Please select curators:</h4>    
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-xs-1"></div>
+        <div class="col-xs-4">
+            
+            <select name="from[]" id="user" class="form-control" size="8" multiple="multiple">
+                {% for user in users %}
+					<option value={{user.pk}}>{{user.username}}</option>
+		  	    {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-xs-2">
+            <button type="button" id="user_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+            <button type="button" id="user_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+            <button type="button" id="user_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+            <button type="button" id="user_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+        </div>
+        
+        <div class="col-xs-4">
+            <select name="to[]" id="user_to" class="form-control" size="8" multiple="multiple"></select>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+    
+    <br>
+    <!--Select datasets-->
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <h4>Please select datasets:</h4>
+        </div>
+    </div>
+    <div class="row">
+        
+         <div class="col-xs-1"></div>
+        <div class="col-xs-4">
+             
+            <select name="from[]" id="dataset" class="form-control" size="20" multiple="multiple">
+                {% for data in datasets %}
+					<option value={{data.pk}}>{{data.accNo}}<span>-</span>{{data.title}}</option>
+		  	    {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-xs-2">
+            <button type="button" id="dataset_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+            <button type="button" id="dataset_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+            <button type="button" id="dataset_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+            <button type="button" id="dataset_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+        </div>
+        
+        <div class="col-xs-4">
+            <select name="to[]" id="dataset_to" class="form-control" size="20" multiple="multiple"></select>
+        </div>
+        <div class="col-xs-1"></div>
+    </div>
+    <br>
+    
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-3">
+            <button type="button"  id="assign" class="btn btn-primary">Assign Curation</button>
+        </div>
+    </div>
+    <!--<div class="row">-->
+    <!--    <div class="alert" id="assign_result"></div>-->
+    <!--</div>-->
+
+    
+<h1 id="message"></h1>
+
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        
+        $('#user').multiselect({
+            search: {
+                left: '<input type="text" name="s1" class="form-control" placeholder="Search..." />',
+                right: '<input type="text" name="s1" class="form-control" placeholder="Search..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 1;
+            }
+        });
+        
+        $('#dataset').multiselect({
+            search: {
+                left: '<input type="text" name="s2" class="form-control" placeholder="Search..." />',
+                right: '<input type="text" name="s2" class="form-control" placeholder="Search..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 1;
+            }
+        });
+        
+
+        $("#topic").cSelect();
+        
+        var selected_topic=0;        
+        var selected_users = new Array;
+        var selected_datasets = new Array;
+       
+        document.getElementById('assign').onclick=function(){
+                selected_topic = $("#topic").val();   
+                 var users = $('#user_to option');
+                 users.each(function(){
+                      selected_users.push($(this).val());
+                });
+                
+                
+                var datasets = $('#dataset_to option');
+                datasets.each(function(){
+                      selected_datasets.push($(this).val());
+                });
+                
+                console.log("topic"+selected_topic);
+                console.log("users"+selected_users);
+                console.log("datasets"+selected_datasets);
+                if(selected_topic.length == 0)
+                {
+                    alert("Please select a topic");
+                }
+                else if (selected_users.length == 0)
+                {
+                    alert("Please select the curators");
+                }
+                else if(selected_datasets.length == 0)
+                {
+                    alert("please select the datasets for curation");
+                }
+                $.ajax({
+                     type:"POST",
+                     url:"/ad/assign/", // same with the url in 'urls.py'
+                     data: {
+                         'selected_datasets[]': selected_datasets, //the array to be post
+                         'selected_users[]': selected_users, 
+                         'selected_topic':selected_topic,
+                         csrfmiddlewaretoken: "{{ csrf_token }}",  //to avoid Error:POST 403 forbidden
+                     },
+                }); 
+                // window.location.reload(true);
+            }; 
+    });
+   
+</script>
+
+{% endblock %}

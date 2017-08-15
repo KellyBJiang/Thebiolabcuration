@@ -1,0 +1,35 @@
+{% extends "administrator/header.html" %}
+{% block content %}
+<div class = "container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        
+        <br>
+        <h1 class="text-center"><img  src="https://cdn4.iconfinder.com/data/icons/medical-filled-two-color/2048/172_-_DNA-128.png"></h1>
+        <h3 class="text-center">Curation Website</h3>
+        <br>
+         <label>Please login first:</label>
+        {% if form.errors %}
+            <p style="color: red">Sorry, that's not a valid username or password</p>
+        {% endif %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">User name:</label>
+                <input type="text" class="form-control" name="username" value="" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" name="password" value="" id="password">
+            </div>
+                <input type="submit" class="btn btn-primary btn-block" value="LOG IN" />
+                <input type="hidden" name="next"  value="/logged_in/" />
+        </form>
+        <!--<br>-->
+        <!--<p align="center">Don't have an account? <a href="/register/">Sign up</a></p>-->
+        <p align="center">Admin? <a href="/ad/">Administrator page</a></p>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,121 @@
+ 
+ +MySQL Error:
+ +ERROR 1290 (HY000): The MySQL server is running with the --secure-file-priv option so it cannot execute this statement
+ +1.find 'etc/mysql/my.cnf' use command to write: sudo vi my.cnf
+ +2.add:
+ +----------------------
+ +[mysqld]
+ +secure_file_priv = ""
+ +----------------------
+ +3. then load the file, the error becomes: 
+ +ERROR 13 (HY000): Can't get stat of '/var/lib/mysql/curation_biolab/test.cvs' (Errcode: 2)
+ +ERROR 13 (HY000): Can't get stat of '/administrator/migratons/tmp/test.cvs' (Errcode: 2)
+ +4.use local-infile
+ +quit MySQL, start with:
+ +mysql -hlocalhost -ucuration -p --local-infile  
+ +loadfile:
+ +load data local infile '/home/ubuntu/workspace/administrator/migrations/tmp/test2.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo);
+ +
+ +
+ +INSERT INTO administrator_curation (data_id_id, user_id_id, topic_id_id) SELECT id FROM administrator_dataset UNION SELECT id FROM auth_user UNION SELECT id FROM administrator_topic where id=1;
+ +
+ +create view tmp as SELECT id FROM administrator_dataset UNION SELECT id FROM auth_user UNION SELECT id FROM administrator_topic where id=1;
+ +
+ 
+ //install VM on windows
+ https://www.youtube.com/channel/UCOYtybo8Jb1Y5HCMt6wl6Iw
+ 
+#my sql commands:
+    //load file
+        mysql -hlocalhost -ucuration -p --local-infile  
+        load data local infile '/home/kelly/curation/Thebiolabcuration/administrator/migrations/tmp/test3.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo);
+ 
+//curation table
+INSERT INTO administrator_curation (topic_id_id, user_id_id, data_id_id,RESULT,submit, comment)
+SELECT *,
+       'N',
+       0,
+       ""
+FROM
+  (SELECT id AS tid
+   FROM administrator_topic) c
+CROSS JOIN
+  (SELECT *
+   FROM
+     (SELECT id AS UID
+      FROM auth_user
+      WHERE 1=1) a
+   CROSS JOIN
+     (SELECT id AS did
+      FROM administrator_dataset) b) d;
+      
+# 08/09/2017
+    1.iframe Issue:
+        - iframe doesn't have content:
+            This line works by using https instead of http:
+            <iframe width="560" height="315" src="https://ryanleetcode.blogspot.com/2015/07/backtracking.html" frameborder="0" allowfullscreen></iframe> 
+        - when trying to get the content from the iframe and highlight it:
+            ERROR:
+                Uncaught DOMException: Failed to read the 'contentDocument' property from 'HTMLIFrameElement': 
+                Blocked a frame with origin "https://curation-website-mitiao.c9users.io" from accessing a cross-origin frame.
+                at HTMLInputElement.document.getElementById.onclick (https://curation-website-mitiao.c9users.io/curator/2/dataset/13/:160:64) 
+            SOLUTION: unsolved
+
+    2. Add a page--steps 
+        -add url.py(both local and global url)
+        -add views.py: def model name, return .html
+        -add the html page in the template folder: <a href="/ad/assign/">Assign Curation</a>
+        -add a link from another page.
+    
+#08/10/2017
+    1.add css and  js file in  in django:
+        - add the files in the static folder in the app.
+        - drag the files in.
+        - Add the following to the html head.
+            <!--CSS in static for assign page-->
+	        <link rel="stylesheet" href="{% static 'administrator/css/style.css' %}" />
+	        <script type="text/javascript" src="{% static 'administrator/multiselect.js' %}"></script>
+    2. add mysql in django:
+        Cars.objects.raw('SELECT max(id), SubStr(brand,1,1) AS letter, brand FROM myapp_cars GROUP BY substr(brand,1,1)')
+        
+#08/11/2017
+    1. Add "POST" from html to django view:
+        - add ajax in javascript function:
+            $.ajax({
+                 type:"POST",
+                 url:"/ad/assign/",                                         // same with the url in 'urls.py'
+                 data: {
+                      'selected_datasets[]': selected_datasets,              //the array to be post
+                      'selected_topic':selected_topic,                       //the variable to be post
+                      csrfmiddlewaretoken: "{{ csrf_token }}",               //to avoid Error:POST 403 forbidden
+                 },
+        -in views.py, add the following to get the array value, this works for both a single value and an array.
+            selected_datasets=request.POST.getlist('selected_datasets[]') 
+            selected_topic = request.POST.get('selected_topic')
+            
+            print selected_datasets
+            print selected_topic
+
+#08/13/2017
+    1.Django with database:
+        https://docs.djangoproject.com/en/1.11/topics/db/queries/
+        https://docs.djangoproject.com/en/1.11/ref/models/querysets/
+
+#08/14/2017
+    1.“Unable to locate package” while trying to install packages with APT
+        - run: sudo apt-get update
+        -https://askubuntu.com/questions/378558/unable-to-locate-package-while-trying-to-install-packages-with-apt
+        -https://packages.ubuntu.com/
+    2.Why not to commit .pyc files into git (and how to fix if you already did)
+        -https://coderwall.com/p/wrxwog/why-not-to-commit-pyc-files-into-git-and-how-to-fix-if-you-already-did
+        -https://stackoverflow.com/questions/5551269/ignore-file-pyc-in-git-repository
+        -steps:
+            1. delete all the pyc files: find . -name "*.pyc" -exec git rm -f "{}" \;
+            2. add .gitignore file in the root folder of the project
+            3. add a line to .gitignore file:
+                *.pyc 
+    	    4. add and push just as usual
+        	    git add . 
+        	    git commit -m  "N"   
+        	    git push origin master 
+        -ERROR: fatal: pathspec './curation_website/__init__.pyc' did not match any files

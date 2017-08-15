@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Curation Website</title>
+	<meta charset="utf-8" />
+	
+	<link href="https://fonts.googleapis.com/css?family=Archivo+Black" rel="stylesheet">
+	<!-- This is to make the radio work:  https://codepen.io/AngelaVelasquez/pen/Eypnq-->
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'curator/curatorstyle.css' %}" />
+
+	<!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!--Load jQuery-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<!--DataTable-->
+	<!--<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.12.4.js"></script>-->
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+	
+	<!--CSS in static for assign page(multiselect for curators and datasets)-->
+	<link rel="stylesheet" href="{% static 'administrator/css/style.css' %}" />
+	<script type="text/javascript" src="{% static 'administrator/multiselect.js' %}"></script>
+	<!--CSS in static for assign page(single select for topic)-->
+    <link rel="stylesheet" href="{% static 'administrator/css/jquery.cSelect.css' %}" />
+    <script type="text/javascript" src="{% static 'administrator/jquery.cSelect.js' %}"></script>
+
+	<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+	
+	<style type="text/css">
+		html,
+		body {
+		  height:100%
+		}
+	</style>
+	<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+</head>
+
+<body class="body" style="background-color:#f6f6f6">
+	<div class="container-fluid" style="min-height:95%; " >
+		<div class="row" style="background-color:#214f7c;">
+			<div >
+				<h3 style="font-family: 'Archivo Black', sans-serif; color:#d8f0ff;"><img style="height : 50px; width: 50px;" src="https://cdn4.iconfinder.com/data/icons/medical-filled-two-color/2048/172_-_DNA-128.png">Welcome to Curation Website</h3> 
+			</div>
+		</div>
+		<div class="row">
+			
+			   {% block content %}
+			   {% endblock %}
+		   
+		</div>
+	</div>
+
+	
+	<footer>
+		<div class="container-fluid" style='margin-left:15px' >
+			<div class="row">
+				<div class="col-sm-12">
+					<p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
+				</div>
+			</div>
+		</div>
+	</footer>	
+	
+</body>
+
+</html>
