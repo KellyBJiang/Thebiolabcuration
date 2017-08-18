@@ -118,4 +118,8 @@ CROSS JOIN
         	    git add . 
         	    git commit -m  "N"   
         	    git push origin master 
-        -ERROR: fatal: pathspec './curation_website/__init__.pyc' did not match any files
+#08/15/2017
+    1.linux commands:
+        -ls -lh main.py    see if i have permission to a file
+        - Copy folder: cp -R source destination/
+        - Copy file: cp source destination/

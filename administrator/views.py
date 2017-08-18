@@ -57,7 +57,7 @@ def register(request):
 def assign(request):
     if request.user.is_staff :
         datasets = Dataset.objects.all()
-        users = User.objects.all()
+        users = User.objects.filter(is_staff=False)
         topics = Topic.objects.all()
         context = {
             'users': users,
@@ -101,5 +101,15 @@ def assign(request):
 def ad(request):
     if request.user.is_staff :
         return render(request, "administrator/ad.html")
+    else:
+        return HttpResponseRedirect('/')
+        
+        
+        
+        
+@login_required(login_url='/')         
+def create(request):
+    if request.user.is_staff :
+        return render(request, "administrator/adpage/create.html")
     else:
         return HttpResponseRedirect('/')

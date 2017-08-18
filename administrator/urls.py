@@ -10,6 +10,6 @@ urlpatterns = [
     url(r'^$', login, {'template_name':'administrator/login.html'}),
     url(r'^ad/$',views.ad,name='ad'),
     url(r'ad/assign/$', views.assign,name = 'assign'),
-    
+    url(r'ad/create/$', views.create,name = 'create'),
     #url(r'^ad/assign/', views.assign, name='assign')
     ]

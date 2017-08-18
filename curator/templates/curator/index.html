@@ -20,9 +20,7 @@
 			</ul>    
 			</div>
 		</nav>
-		
 		<div class="container">
-			
 			<div id="display">	
 			</div>
 		</div>
@@ -30,7 +28,6 @@
 <script>
     function reply_click(clicked_id)
     {
-       
        if(clicked_id == 0)
        {
            document.getElementById("display").innerHTML = 
@@ -54,12 +51,19 @@
             content.innerHTML = 
             	"<h5>Welcome  {{user.username}}, you have {{datasets_submitted_count}} submitted assigments:</h5>"+
        	        	"<table id='submitted' class='table'>"+
-       	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
+       	        		"<thead><tr><th>Accession</th><th>Title</th><th>Result</th></tr></thead>"+
        	        		"<tbody>"+
        	        			"{% for c in  c_s %}"+
        	    	        		"{% for data in datasets_submitted %}"+
     	        					"{% if data.id == c.data_id_id %}"+
-    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
+    	        						"{%  if c.result == 'Y' %}"+
+    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>Yes</td></tr>"+
+    	        						"{% elif c.result == 'N'%}"+
+    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>No</td></tr>"+
+										"{% elif c.result == 'U'%}"+
+											"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>Undecided</td></tr>"+
+    	        						"{%  endif %}"+
+    	        						// "<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{res}}</td></tr>"+
     	        					"{% endif %}"+
     	        				"{% endfor %}"+
     	        			"{% endfor%}"+

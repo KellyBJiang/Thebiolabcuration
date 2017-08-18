@@ -1,0 +1,62 @@
+{% extends "administrator/header.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-xs-1"></div>
+    <div class="col-xs-11">
+        <h3 style="color:#214f7c;">Welcome to create page, here you can:</h3> 
+    </div>
+</div>
+<div class="row">
+    <div class = "col-xs-1"></div>
+    <div class = "col-xs-11">
+        <ul class="nav navbar-nav">
+            <li >
+                <a href="/ad/"><img src="https://cdn4.iconfinder.com/data/icons/system-ui-set/512/triangle-arrow-left-back-last-vector-ui-128.png" style="height:20px; width=100%"></img>Back to Main menu</a>
+            </li>
+            <li id="topic-sec" onClick="select_sec(this.id)">
+		      	<a href="#">Add new topic</a>
+		    </li>
+            <li id="dataset-sec" onClick="select_sec(this.id)">
+                <a href="#">Upload datasets</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class = "col-xs-1"></div>
+    <div class = "col-xs-11">
+        <div class="embed-responsive embed-responsive-4by3">
+            <div class="tab-content" >
+                <div id="render"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function select_sec(clicked_id)
+    {
+        if(clicked_id == "topic-sec")
+        {
+            document.getElementById("render").innerHTML ="<h1>Topic</h1>";
+        }
+        if(clicked_id == "dataset-sec")
+        {
+            document.getElementById("render").innerHTML="<h1>Dataset</h1>";
+        }
+        
+    }
+	$(document).ready(function()
+	{
+	   select_sec("topic-sec") ;
+	});
+</script>
+
+
+
+
+
+{% endblock %}

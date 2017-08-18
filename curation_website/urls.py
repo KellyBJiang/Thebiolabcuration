@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'^logged_in/',views.logged_in, name = 'logged_in'),
     url(r'^logout/',views.logged_out, name = 'logged_out'),
     url(r'^register/',views.register, name='register'),
-
+    url(r'^admin/logout/',views.logged_out, name = 'logged_out'),
 ]
