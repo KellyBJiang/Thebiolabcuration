@@ -9,6 +9,22 @@ import json
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
+# highlight
+import urllib2
+import cookielib
+from bs4 import BeautifulSoup
+
+#parser json file
+import json
+from django.views.decorators.csrf import csrf_exempt
+
+#To get pmc html, need selenium
+from selenium import webdriver
+
+#split string
+import re
+
+
 
 @login_required(login_url='/')
 def index(request,user):
@@ -48,7 +64,7 @@ def index(request,user):
  
         
         
-        
+@csrf_exempt    
 @login_required 
 def curation(request,user,dataset_id,curation_id):
     
@@ -60,6 +76,7 @@ def curation(request,user,dataset_id,curation_id):
     
     #current dataset
     dataset = Dataset.objects.get(pk = dataset_id)
+    accNo= Dataset.objects.values_list('accNo',flat = True).get(pk = dataset_id)
     pubmedid = Dataset.objects.values_list('pubNo',flat = True).get(pk = dataset_id)
     
     #get the topic and the comment,result, submit state sof the current dataset
@@ -69,33 +86,90 @@ def curation(request,user,dataset_id,curation_id):
     cur_result = Curation.objects.values_list('result',flat = True).get(pk=curation_id)
     cur_submit = Curation.objects.values_list('submit',flat = True).get(pk=curation_id)
     
-    #topic_id = Curation.objects.values_list('topic_id',flat = True).get(user_id = user, data_id = dataset_id)
-    # topic = Topic.objects.get(pk = topic_id)
-    # cur_comment = Curation.objects.values_list('comment',flat = True).get(user_id = user, data_id = dataset_id)
-    # cur_result = Curation.objects.values_list('result',flat = True).get(user_id = user, data_id = dataset_id)
-    # cur_submit = Curation.objects.values_list('submit',flat = True).get(user_id = user, data_id = dataset_id)
-    
-    
-    
     #which template to use:
     template = loader.get_template('curator/curation.html')
     
+
+    #Python download webpage
+    cj = cookielib.LWPCookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    urllib2.install_opener(opener)
+    
+    #Download ncbi page, replace the wrong urls
+    url_n = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+accNo
+    req_n = urllib2.Request(url_n)
+    operate_n = opener.open(req_n)
+    msg_n = operate_n.read()
+    document_n = 'curator/templates/curator/ncbi.html'  
+    file_ = open(document_n,'w')  
+    msg_n = msg_n.replace('src="','src="https://www.ncbi.nlm.nih.gov')
+    msg_n = msg_n.replace('href="/geo','href="https://www.ncbi.nlm.nih.gov/geo')
+    msg_n = msg_n.replace('href="/Taxonomy','href="https://www.ncbi.nlm.nih.gov/Taxonomy')
+    msg_n = msg_n.replace('href="/pubmed/', 'href="https://www.ncbi.nlm.nih.gov/pubmed/')
+    # replace requires beautiful soup
+    soup_n = BeautifulSoup(msg_n,"html5lib")
+    for li in soup_n.find_all('li'):
+        li.decompose()
+    for f in soup_n.find_all('form'):
+        f.decompose()
+    soup_string_n = str(soup_n)
+    #highlight and ,that for test
+    hightlight = "and,    that "
+    soup_pattern=re.split(r'[;,\s]\s*' ,hightlight)
+    for phrase in soup_pattern:
+        if len(phrase) >= 3 :
+            soup_string_n = soup_string_n.replace(phrase,'<mark>'+phrase+'</mark>')
+            
+    file_.write(soup_string_n)
+    file_.close()
+    
+    
+    
+    
+    # Download pubmed page
+    url_pmed = "https://www.ncbi.nlm.nih.gov/pubmed/"+pubmedid
+    req_pmed = urllib2.Request(url_pmed)
+    operate_pmed = opener.open(req_pmed)
+    msg_pmed = operate_pmed.read()
+    document_pmed = 'curator/templates/curator/pubmed.html'  
+    file_ = open(document_pmed,'w')  
+    for phrase in soup_pattern:
+        if len(phrase) >= 3 :
+            msg_pmed = msg_pmed.replace(phrase,'<mark>'+phrase+'</mark>')
+            
+    file_.write(msg_pmed)
+    file_.close()
+    
+    
+    
+    
+
+    
+    
+
+    #Download PMC html
     #Get data from ID convertor
     convert_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+pubmedid+'&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit'
     convert_pmc=requests.get(convert_url)#get the jsonfile including the converted pmc_id 
     jsonString=convert_pmc.content # pmc id is under the tag content
-    
-    
-    #if request.method == "POST" and 'highlight' in request.POST:
-    url='http://www.mdpi.com/2073-4425/8/8/198'
-    iframe = requests.get(url).content
-    test=requests.get(url).content
-    html_file = open("test.html","w")
-    html_file.write(str(test))
-    
-    
-    
-    
+    j = json.loads(jsonString)
+   
+    if j.get("records") != None:
+        if j["records"][0].get("pmcid") != None:
+            pmcnum = j["records"][0]["pmcid"]
+            msg_pmc_obj = webdriver.PhantomJS( service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'] )
+            url_pmc = "https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum
+            msg_pmc_obj.get(url_pmc)
+            msg_pmc=msg_pmc_obj.page_source.encode('utf-8')
+            cov = open("curator/templates/curator/pmc.html","w")
+            for phrase in soup_pattern:
+                if len(phrase) >= 3 :
+                    msg_pmc=msg_pmc.replace(phrase, "<mark>"+phrase+"</mark>")
+            cov.write(msg_pmc)
+            msg_pmc_obj.quit()
+            cov.close()
+
+
     if request.method == "POST":
         curation = Curation.objects.get(user_id = user, data_id = dataset_id, topic_id=topic_id)
         form = CurationFrom(request.POST or None)
@@ -122,6 +196,21 @@ def curation(request,user,dataset_id,curation_id):
                 'cur_result':cur_result,
                 'cur_submit':cur_submit,
                 'jsonString':jsonString,
-                'iframe_content':iframe,
+                'ncbisrc':"ncbi.html"
+                # 'iframe_content':iframe,
             }
         return HttpResponse(template.render(context, request))
+        
+        
+def ncbi(request,user,dataset_id,curation_id):
+    template = loader.get_template('curator/ncbi.html')
+    return HttpResponse(template.render(request))
+    
+def pubmed(request,user,dataset_id,curation_id):
+    template = loader.get_template('curator/pubmed.html')
+    return HttpResponse(template.render(request))
+    
+    
+def pmc(request,user,dataset_id,curation_id):
+    template = loader.get_template('curator/pmc.html')
+    return HttpResponse(template.render(request))

@@ -123,3 +123,13 @@ CROSS JOIN
         -ls -lh main.py    see if i have permission to a file
         - Copy folder: cp -R source destination/
         - Copy file: cp source destination/
+
+#08/20/2017
+    1. install selenium and PhantomJS
+        1) sudo apt-get install python-pip
+        2) sudo pip install selenium
+        3) sudo apt-get install phantomjs
+    2.PhantomJS return empty html page:
+        The problem is the SSL encryption on the https websites, ignoring them will do the trick.
+        Call the PhantomJS driver as:
+        driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])

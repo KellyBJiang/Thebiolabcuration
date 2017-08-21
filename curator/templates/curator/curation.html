@@ -22,22 +22,22 @@
                     <input type="button" class="btn btn-info" value="Back" onclick="history.back();">
                     <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">
             </div>
-            
 			<!--iframe-->
     	    <div class="embed-responsive embed-responsive-4by3">
                 <div class="tab-content" >
                     <div id="menu1" class="tab-pane fade in active">
-                        <iframe id="renderpage_ncbi" style="transform: scale(1.2);transform-origin: 50% 0; width: 100%; height: 100%; position: absolute;"  scrolling="yes" src="">
+                         <!--To make the content in iframe larger, add :transform: scale(1.2);transform-origin: 50% 0; in style-->
+                        <iframe id="renderpage_ncbi" style="width: 100%; height: 100%; position: absolute;"  scrolling="yes" src="ncbi.html">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
                     <div id="menu2" class="tab-pane fade">
-                        <iframe id="renderpage_pubmed" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="">
+                        <iframe id="renderpage_pubmed" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="pubmed.html">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
                     <div id="menu3" class="tab-pane fade">
-                        <iframe id="renderpage_pmc" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="">
+                        <iframe id="renderpage_pmc" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="pmc.html">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
@@ -73,19 +73,20 @@
     <script>
         var ncbinum ='{{dataset.accNo}}';
         var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
-        document.getElementById('renderpage_ncbi').src = ncbi_str;
+        //document.getElementById('renderpage_ncbi').src = ncbi_str;
+        // document.getElementById('renderpage_ncbi').src 
         var pubnum = '{{dataset.pubNo}}';
         var pub_str = "https://www.ncbi.nlm.nih.gov/pubmed/"+pubnum;
         if(pubnum.length > 1)
         {
-            document.getElementById('renderpage_pubmed').src = pub_str;
+            //document.getElementById('renderpage_pubmed').src = pub_str;
             document.getElementById('pub_tab').innerHTML="<a data-toggle='pill' href='#menu2'>Pubmed</a>";
             var pmcinfo = JSON.parse('{{jsonString|escapejs}}');
             var pmcnum = pmcinfo.records[0].pmcid;
             if(pmcnum != null)
             {
                 var pmc_str ="https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum;
-                document.getElementById('renderpage_pmc').src = pmc_str;
+                //document.getElementById('renderpage_pmc').src = pmc_str;
                 document.getElementById('pmc_tab').innerHTML="<a data-toggle='pill' href='#menu3'>PMC</a>";
             }
         }
