@@ -83,7 +83,7 @@
             document.getElementById('pub_tab').innerHTML="<a data-toggle='pill' href='#menu2'>Pubmed</a>";
             var pmcinfo = JSON.parse('{{jsonString|escapejs}}');
             var pmcnum = pmcinfo.records[0].pmcid;
-            if(pmcnum != null)
+            if(pmcnum != null && '{{pmc_delay}}' == -1)
             {
                 var pmc_str ="https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum;
                 //document.getElementById('renderpage_pmc').src = pmc_str;

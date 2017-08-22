@@ -95,6 +95,27 @@ def curation(request,user,dataset_id,curation_id):
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     urllib2.install_opener(opener)
     
+    
+    #highlight on NCBI page
+    highlight = topic.highlihgt.encode('utf-8')
+    soup_pattern=re.split(r'[;,\s]\s*' ,highlight)
+    
+    # REGULAR EXPRESSION
+    highlight_keywords=''
+    for phrase in soup_pattern:
+        if len(phrase) >= 3 :
+            highlight_keywords+="(\\b"+str(phrase)+"\\b)|"
+    highlight_keywords += '\b'
+    # print type(highlight_keywords)
+    # print highlight_keywords
+ 
+    regex = re.compile(highlight_keywords, re.IGNORECASE)
+    
+    
+    
+    
+    
+    
     #Download ncbi page, replace the wrong urls
     url_n = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+accNo
     req_n = urllib2.Request(url_n)
@@ -113,16 +134,21 @@ def curation(request,user,dataset_id,curation_id):
     for f in soup_n.find_all('form'):
         f.decompose()
     soup_string_n = str(soup_n)
-    #highlight and ,that for test
-    hightlight = "and,    that "
-    soup_pattern=re.split(r'[;,\s]\s*' ,hightlight)
-    for phrase in soup_pattern:
-        if len(phrase) >= 3 :
-            soup_string_n = soup_string_n.replace(phrase,'<mark>'+phrase+'</mark>')
-            
+    
+   
+    i = 0; output=""
+    for m in regex.finditer(soup_string_n):
+        output += "".join([soup_string_n[i:m.start()],
+                           "<mark>",
+                           soup_string_n[m.start():m.end()],
+                           "</mark>"])
+        i = m.end() 
+    soup_string_n= "".join([output, soup_string_n[i:]])
     file_.write(soup_string_n)
     file_.close()
     
+
+   
     
     
     
@@ -133,10 +159,17 @@ def curation(request,user,dataset_id,curation_id):
     msg_pmed = operate_pmed.read()
     document_pmed = 'curator/templates/curator/pubmed.html'  
     file_ = open(document_pmed,'w')  
-    for phrase in soup_pattern:
-        if len(phrase) >= 3 :
-            msg_pmed = msg_pmed.replace(phrase,'<mark>'+phrase+'</mark>')
-            
+    # Highlight on Pubmed page
+    i = 0; output=""
+    for m in regex.finditer(msg_pmed):
+        output += "".join([msg_pmed[i:m.start()],
+                           "<mark>",
+                           msg_pmed[m.start():m.end()],
+                           "</mark>"])
+        i = m.end() 
+        # print msg_pmed[m.start():m.end()]
+    msg_pmed= "".join([output, msg_pmed[i:]])
+    
     file_.write(msg_pmed)
     file_.close()
     
@@ -153,23 +186,41 @@ def curation(request,user,dataset_id,curation_id):
     convert_pmc=requests.get(convert_url)#get the jsonfile including the converted pmc_id 
     jsonString=convert_pmc.content # pmc id is under the tag content
     j = json.loads(jsonString)
-   
+    
+    
+    pmc_delay = 0
     if j.get("records") != None:
         if j["records"][0].get("pmcid") != None:
             pmcnum = j["records"][0]["pmcid"]
+            print "pmcnum"
+            print pmcnum
+            
             msg_pmc_obj = webdriver.PhantomJS( service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'] )
             url_pmc = "https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum
             msg_pmc_obj.get(url_pmc)
             msg_pmc=msg_pmc_obj.page_source.encode('utf-8')
             cov = open("curator/templates/curator/pmc.html","w")
-            for phrase in soup_pattern:
-                if len(phrase) >= 3 :
-                    msg_pmc=msg_pmc.replace(phrase, "<mark>"+phrase+"</mark>")
+            pmc_delay = msg_pmc.find("This article has a delayed release")
+            print pmc_delay
+            # Highlight on PMC page
+            i = 0; output=""
+            for m in regex.finditer(msg_pmc):
+                output += "".join([msg_pmc[i:m.start()],
+                                   "<mark>",
+                                   msg_pmc[m.start():m.end()],
+                                   "</mark>"])
+                i = m.end() 
+                # print msg_pmed[m.start():m.end()]
+            msg_pmc= "".join([output, msg_pmc[i:]])
             cov.write(msg_pmc)
             msg_pmc_obj.quit()
             cov.close()
 
 
+
+
+
+    # Submit curation result
     if request.method == "POST":
         curation = Curation.objects.get(user_id = user, data_id = dataset_id, topic_id=topic_id)
         form = CurationFrom(request.POST or None)
@@ -196,8 +247,8 @@ def curation(request,user,dataset_id,curation_id):
                 'cur_result':cur_result,
                 'cur_submit':cur_submit,
                 'jsonString':jsonString,
-                'ncbisrc':"ncbi.html"
-                # 'iframe_content':iframe,
+                # 'ncbisrc':"ncbi.html",
+                'pmc_delay': pmc_delay,
             }
         return HttpResponse(template.render(context, request))
         

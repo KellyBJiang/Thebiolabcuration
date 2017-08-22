@@ -133,3 +133,17 @@ CROSS JOIN
         The problem is the SSL encryption on the https websites, ignoring them will do the trick.
         Call the PhantomJS driver as:
         driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'])
+        
+#08/21/2017
+    1.migrate DB:
+        -python manage.py makemigrations
+        -python manage.py migrate
+        -Run mysql : mysql-ctl cli
+        
+#08/22/2017
+    1.  replace and replace ignore case
+        soup_string_n = soup_string_n.replace(phrase,'<mark>'+phrase+'</mark>')
+        soup_string_n=re.sub(phrase, '<mark>'+phrase+'</mark>', soup_string_n, flags=re.IGNORECASE)
+    2.try regular expression:
+        https://regex101.com/
+        
