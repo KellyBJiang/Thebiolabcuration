@@ -30,8 +30,11 @@ class Dataset(models.Model) :
     pubNo = models.TextField(default=None, blank=True, null=True)
     complink = models.TextField(default=None, blank=True, null=True)
     content = models.TextField(default=None, blank=True, null=True)
-    def __str__(self) :
-        return self.title
+    topic = models.IntegerField(default = 0)
+    # def __str__(self) :
+    #     return self.title
+    def __unicode__(self):
+        return u'%s' % (self.title)
     
 
 class Curation(models.Model):

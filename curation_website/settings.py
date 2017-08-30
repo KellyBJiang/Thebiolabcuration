@@ -103,8 +103,13 @@ DATABASES = {
         'USER': 'curation',
         'PASSWORD': 'curation',
         'OPTIONS': {
+            'charset': 'utf8',
             'read_default_file': '/home/ubuntu/config/my.cnf',
         },
+        'TEST': {
+            'COLLATION': "utf8_general_ci",
+            'CHARSET': "utf8"
+        }
     }
 }
 

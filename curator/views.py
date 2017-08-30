@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect
 from administrator.models import   Topic, Curation, Dataset, Summary
 from django.template import loader
@@ -70,7 +71,6 @@ def curation(request,user,dataset_id,curation_id):
     
     #get the id of the next unsubmitted one
     c_ids=Curation.objects.filter(user_id = user,submit = False)#list of to do curation
-    
     # curation_data_ids = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,submit = False)
     # datasets_next_unsubmitted = Dataset.objects.filter(pk__in = curation_data_ids) #this is actually to do list
     
@@ -86,7 +86,8 @@ def curation(request,user,dataset_id,curation_id):
     cur_result = Curation.objects.values_list('result',flat = True).get(pk=curation_id)
     cur_submit = Curation.objects.values_list('submit',flat = True).get(pk=curation_id)
     
-    #which template to use:
+    
+    #define template:
     template = loader.get_template('curator/curation.html')
     
 
@@ -100,20 +101,13 @@ def curation(request,user,dataset_id,curation_id):
     highlight = topic.highlihgt.encode('utf-8')
     soup_pattern=re.split(r'[;,\s]\s*' ,highlight)
     
-    # REGULAR EXPRESSION
+    # REGULAR EXPRESSION highlight keywords
     highlight_keywords=''
     for phrase in soup_pattern:
         if len(phrase) >= 3 :
             highlight_keywords+="(\\b"+str(phrase)+"\\b)|"
     highlight_keywords += '\b'
-    # print type(highlight_keywords)
-    # print highlight_keywords
- 
     regex = re.compile(highlight_keywords, re.IGNORECASE)
-    
-    
-    
-    
     
     
     #Download ncbi page, replace the wrong urls
@@ -134,8 +128,7 @@ def curation(request,user,dataset_id,curation_id):
     for f in soup_n.find_all('form'):
         f.decompose()
     soup_string_n = str(soup_n)
-    
-   
+    #highlight ncbi
     i = 0; output=""
     for m in regex.finditer(soup_string_n):
         output += "".join([soup_string_n[i:m.start()],
@@ -146,79 +139,11 @@ def curation(request,user,dataset_id,curation_id):
     soup_string_n= "".join([output, soup_string_n[i:]])
     file_.write(soup_string_n)
     file_.close()
-    
-
-   
-    
-    
-    
-    # Download pubmed page
-    url_pmed = "https://www.ncbi.nlm.nih.gov/pubmed/"+pubmedid
-    req_pmed = urllib2.Request(url_pmed)
-    operate_pmed = opener.open(req_pmed)
-    msg_pmed = operate_pmed.read()
-    document_pmed = 'curator/templates/curator/pubmed.html'  
-    file_ = open(document_pmed,'w')  
-    # Highlight on Pubmed page
-    i = 0; output=""
-    for m in regex.finditer(msg_pmed):
-        output += "".join([msg_pmed[i:m.start()],
-                           "<mark>",
-                           msg_pmed[m.start():m.end()],
-                           "</mark>"])
-        i = m.end() 
-        # print msg_pmed[m.start():m.end()]
-    msg_pmed= "".join([output, msg_pmed[i:]])
-    
-    file_.write(msg_pmed)
-    file_.close()
-    
-    
-    
-    
-
-    
-    
-
-    #Download PMC html
-    #Get data from ID convertor
+    # Get pmc number
     convert_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+pubmedid+'&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit'
     convert_pmc=requests.get(convert_url)#get the jsonfile including the converted pmc_id 
     jsonString=convert_pmc.content # pmc id is under the tag content
     j = json.loads(jsonString)
-    
-    
-    pmc_delay = 0
-    if j.get("records") != None:
-        if j["records"][0].get("pmcid") != None:
-            pmcnum = j["records"][0]["pmcid"]
-            print "pmcnum"
-            print pmcnum
-            
-            msg_pmc_obj = webdriver.PhantomJS( service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'] )
-            url_pmc = "https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum
-            msg_pmc_obj.get(url_pmc)
-            msg_pmc=msg_pmc_obj.page_source.encode('utf-8')
-            cov = open("curator/templates/curator/pmc.html","w")
-            pmc_delay = msg_pmc.find("This article has a delayed release")
-            print pmc_delay
-            # Highlight on PMC page
-            i = 0; output=""
-            for m in regex.finditer(msg_pmc):
-                output += "".join([msg_pmc[i:m.start()],
-                                   "<mark>",
-                                   msg_pmc[m.start():m.end()],
-                                   "</mark>"])
-                i = m.end() 
-                # print msg_pmed[m.start():m.end()]
-            msg_pmc= "".join([output, msg_pmc[i:]])
-            cov.write(msg_pmc)
-            msg_pmc_obj.quit()
-            cov.close()
-
-
-
-
 
     # Submit curation result
     if request.method == "POST":
@@ -247,8 +172,7 @@ def curation(request,user,dataset_id,curation_id):
                 'cur_result':cur_result,
                 'cur_submit':cur_submit,
                 'jsonString':jsonString,
-                # 'ncbisrc':"ncbi.html",
-                'pmc_delay': pmc_delay,
+                # 'pmc_delay': pmc_delay,
             }
         return HttpResponse(template.render(context, request))
         
@@ -258,10 +182,94 @@ def ncbi(request,user,dataset_id,curation_id):
     return HttpResponse(template.render(request))
     
 def pubmed(request,user,dataset_id,curation_id):
-    template = loader.get_template('curator/pubmed.html')
+    pubmedid = Dataset.objects.values_list('pubNo',flat = True).get(pk = dataset_id)
+    # Get highlight keywords
+    topic_id = Curation.objects.values_list('topic_id',flat = True).get(pk=curation_id)
+    topic = Topic.objects.get(pk = topic_id)
+    #highlight on NCBI page
+    highlight = topic.highlihgt.encode('utf-8')
+    soup_pattern=re.split(r'[;,\s]\s*' ,highlight)
+    # REGULAR EXPRESSION highlight keywords
+    highlight_keywords=''
+    for phrase in soup_pattern:
+        if len(phrase) >= 3 :
+            highlight_keywords+="(\\b"+str(phrase)+"\\b)|"
+    highlight_keywords += '\b'
+    regex = re.compile(highlight_keywords, re.IGNORECASE)
+
+    url = 'https://www.ncbi.nlm.nih.gov/pubmed/'+pubmedid
+    response = urllib2.urlopen(url)
+    msg_pmed = response.read()
+    
+    # Highlight on Pubmed page
+    i = 0; output=""
+    for m in regex.finditer(msg_pmed):
+        output += "".join([msg_pmed[i:m.start()],
+                          "<mark>",
+                          msg_pmed[m.start():m.end()],
+                          "</mark>"])
+        i = m.end() 
+    msg_pmed= "".join([output, msg_pmed[i:]])
+    
+    f = open('curator/templates/curator/lava.html', 'w')
+    f.write(msg_pmed)
+    f.close()
+    template = loader.get_template('curator/lava.html')
     return HttpResponse(template.render(request))
     
     
 def pmc(request,user,dataset_id,curation_id):
+    pubmedid = Dataset.objects.values_list('pubNo',flat = True).get(pk = dataset_id)
+    
+    convert_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+pubmedid+'&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit'
+    convert_pmc=requests.get(convert_url)#get the jsonfile including the converted pmc_id 
+    jsonString=convert_pmc.content # pmc id is under the tag content
+    j = json.loads(jsonString)
+    
+    # Get highlight keywords
+    topic_id = Curation.objects.values_list('topic_id',flat = True).get(pk=curation_id)
+    topic = Topic.objects.get(pk = topic_id)
+    #highlight on NCBI page
+    highlight = topic.highlihgt.encode('utf-8')
+    soup_pattern=re.split(r'[;,\s]\s*' ,highlight)
+    # REGULAR EXPRESSION highlight keywords
+    highlight_keywords=''
+    for phrase in soup_pattern:
+        if len(phrase) >= 3 :
+            highlight_keywords+="(\\b"+str(phrase)+"\\b)|"
+    highlight_keywords += '\b'
+    regex = re.compile(highlight_keywords, re.IGNORECASE)
+    
+    #download the pmc page
+    # pmc_delay = 0
+    if j.get("records") != None:
+        if j["records"][0].get("pmcid") != None:
+            pmcnum = j["records"][0]["pmcid"]
+            #pmc website refuse download , so use PhantomJS to crawl
+            msg_pmc_obj = webdriver.PhantomJS( service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'] )
+            url_pmc = "https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum
+            msg_pmc_obj.get(url_pmc)
+            msg_pmc=msg_pmc_obj.page_source.encode('utf-8')
+            cov = open("curator/templates/curator/pmc.html","w")
+            #check if the actual paper is delayed
+            pmc_delay = msg_pmc.find("This article has a delayed release")
+            # Highlight on PMC page
+            i = 0; output=""
+            for m in regex.finditer(msg_pmc):
+                output += "".join([msg_pmc[i:m.start()],
+                                  "<mark>",
+                                  msg_pmc[m.start():m.end()],
+                                  "</mark>"])
+                i = m.end() 
+            msg_pmc= "".join([output, msg_pmc[i:]])
+            cov.write(msg_pmc)
+            msg_pmc_obj.quit()
+            cov.close()
+            
     template = loader.get_template('curator/pmc.html')
-    return HttpResponse(template.render(request))
+    context = {
+                'pmc_delay': pmc_delay,
+            }
+    print "pmc_delay"
+    print pmc_delay
+    return HttpResponse(template.render(context, request))

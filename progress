@@ -13,8 +13,11 @@
  +4.use local-infile
  +quit MySQL, start with:
  +mysql -hlocalhost -ucuration -p --local-infile  
+ pw:curation
+ use curation_biolab
+ 
  +loadfile:
- +load data local infile '/home/ubuntu/workspace/administrator/migrations/tmp/test2.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo);
+ +load data local infile '/home/ubuntu/workspace/administrator/migrations/tmp/mm.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo,topic);
  +
  +
  +INSERT INTO administrator_curation (data_id_id, user_id_id, topic_id_id) SELECT id FROM administrator_dataset UNION SELECT id FROM auth_user UNION SELECT id FROM administrator_topic where id=1;
@@ -139,6 +142,9 @@ CROSS JOIN
         -python manage.py makemigrations
         -python manage.py migrate
         -Run mysql : mysql-ctl cli
+                    start MySQL. Will create an empty database on first start:  mysql-ctl start
+                    stop MySQL: mysql-ctl stop
+                    run the MySQL interactive shell: mysql-ctl cli
         
 #08/22/2017
     1.  replace and replace ignore case
@@ -146,4 +152,71 @@ CROSS JOIN
         soup_string_n=re.sub(phrase, '<mark>'+phrase+'</mark>', soup_string_n, flags=re.IGNORECASE)
     2.try regular expression:
         https://regex101.com/
+
+#08/23/2017
+    1. download all the pages as HTML, replace some addr to make the javascript and links working
+    2. solve problem: Too slow-> render GEO first, load pubmed and pmc later
+        download the page when call the url, in iframe
+
+    3./Error:
+    UnicodeEncodeError at /admin/administrator/dataset/347/change/
+    'ascii' codec can't encode characters in position 33-34: ordinal not in range(128)
+    Request Method:	GET
+        To display the current character encoding set :
+        SELECT default_character_set_name FROM information_schema.SCHEMATA S WHERE schema_name = "curation_biolab";
         
+        1.In settings.py, add
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.mysql',
+                    'NAME': 'curation_biolab',
+                    'USER': 'curation',
+                    'PASSWORD': 'curation',
+                    'OPTIONS': {
+                        'charset': 'utf8',
+                        'read_default_file': '/home/ubuntu/config/my.cnf',
+                    },
+                    'TEST': {
+                        'COLLATION': "utf8_general_ci",
+                        'CHARSET': "utf8"
+                    }
+                }
+                
+        2. Admin page, show greek characters: //https://itekblog.com/ascii-codec-cant-encode-characters-in-position/
+            -Just fix  model __UNICODE__ function to return unicode (u”):
+                def __unicode__(self):
+                   return u'%s' % (self.title)
+            
+            -Test FileSystem
+                import sys
+                sys.getfilesystemencoding()
+            If the output is:‘UTF-8’,You don’t have problem with your system encoding.
+        
+                import locale
+                locale.getdefaultlocale()
+            Again, if the output is: (‘en_US’, ‘UTF8’) – the problem is not here. if it is – change it according to your system.
+        
+        3.Showing Unicode As Question Marks? EDIT MY.CNF(https://www.smallsurething.com/why-is-my-djangomysql-application-showing-unicode-as-question-marks/)
+            run this command to check that you are in fact dealing with an incorrect character set:
+                mysqld --verbose --help | grep character-set
+            In the output, you will probably see the following line:
+                character-set-server latin1
+            If you do, keep going. We’re going to sort it out.
+            (1)EDIT MY.CNF
+                my.cnf is located at /etc/mysql/my.conf 
+                Add the following line to it:
+                    default-character-set = utf8
+                Next, find the [mysqld]  section and add the following three lines to it:
+                    character-set-server = utf8
+                    collation-server = utf8_unicode_ci
+                    init_connect='set collation_connection = utf8_unicode_ci;'
+                Save my.cnf  and restart MySQL. On many systems, you can do this with the service  command:
+                    service mysql restart
+            (2)ALTER EACH TABLE TO USE THE NEW CHARACTER SET
+                convert each table one by one to the new character set
+                    mysql -u USER -pPASSWORD DATABASE -N -e "SHOW TABLES" | awk '{print "ALTER TABLE", $1, "CONVERT TO CHARACTER SET utf8;"}'
+                It will generate the SQL you need to change each of your tables. 
+                    ALTER TABLE users CONVERT TO CHARACTER SET utf8;
+                    ALTER TABLE comments CONVERT TO CHARACTER SET utf8;
+                    ALTER TABLE posts CONVERT TO CHARACTER SET utf8;
+                Run that code 

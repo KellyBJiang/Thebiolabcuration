@@ -4,17 +4,7 @@
 		<!--navbar-->
 		<nav class="navbar navbar-default" style="background-color: #e3f2fd;">
 		  <div class="container-fluid">                                                                                                                                         
-		    <ul class="nav navbar-nav">
-		      <li id="0" onClick="reply_click(this.id)">
-		      	<a href="#">To Do</a>
-		      </li>
-		      <li id="1" onClick="reply_click(this.id)">
-		      	<a href="#">Submitted</a>
-		      </li>
-		      <li id="2" onClick="reply_click(this.id)">
-		      	<a href="#">Undecided</a>
-		      </li>
-		    </ul>
+		      <div id = "nav"></div>
 		    <ul class="nav navbar-nav navbar-right"> 
 				 <li> <a href="/logout/">Log Out </a></li>
 			</ul>    
@@ -26,10 +16,18 @@
 		</div>
 		
 <script>
+	reply_click(0);
     function reply_click(clicked_id)
     {
        if(clicked_id == 0)
        {
+       		document.getElementById("nav").innerHTML = 
+       		'<ul class="nav navbar-nav">'+
+       		'<li id="0" onClick="reply_click(this.id)" class = "active"><a href="#">To Do</a></li>'+
+       		'<li id="1" onClick="reply_click(this.id)"><a href="#">Submitted</a></li>'+
+       		'<li id="2" onClick="reply_click(this.id)"><a href="#">Undecided</a></li>'+
+       		'</ul>';
+       		
            document.getElementById("display").innerHTML = 
         		"<h5>Welcome  {{user.username}}, you have {{datasets_count}} assigments:</h5>"+
      	        	"<table id='to_do' class='table table-hover'>"+
@@ -47,6 +45,12 @@
        }
         if(clicked_id==1)
         {
+        	document.getElementById("nav").innerHTML = 
+       		'<ul class="nav navbar-nav">'+
+       		'<li id="0" onClick="reply_click(this.id)"><a href="#">To Do</a></li>'+
+       		'<li id="1" onClick="reply_click(this.id)" class = "active"><a href="#">Submitted</a></li>'+
+       		'<li id="2" onClick="reply_click(this.id)"><a href="#">Undecided</a></li>'+
+       		'</ul>';
             var content = document.getElementById("display");
             content.innerHTML = 
             	"<h5>Welcome  {{user.username}}, you have {{datasets_submitted_count}} submitted assigments:</h5>"+
@@ -75,6 +79,12 @@
         }
         if(clicked_id==2)
         {
+        	document.getElementById("nav").innerHTML = 
+       		'<ul class="nav navbar-nav">'+
+       		'<li id="0" onClick="reply_click(this.id)"><a href="#">To Do</a></li>'+
+       		'<li id="1" onClick="reply_click(this.id)"><a href="#">Submitted</a></li>'+
+       		'<li id="2" onClick="reply_click(this.id)" class = "active"><a href="#">Undecided</a></li>'+
+       		'</ul>';
             document.getElementById("display").innerHTML = 
             	"<h5>Welcome  {{user.username}}, you have {{datasets_undicided_count}} undicided assigments:</h5>"+
        	        	"<table id='undecided' class='table'>"+

@@ -13,6 +13,7 @@
     </div>
     
     <!--Select Topic-->
+        
     <div class="row">
         <div class="col-xs-1"></div>
         <div class="col-xs-11">
@@ -25,6 +26,7 @@
         <div class="col-xs-10">
             
             <select id = "topic">
+                <option value="" disabled selected hidden>Select a topic</option>
                 {% for topic in topics %}
 					<option value={{topic.pk}}>{{topic.topic}}</option>
 		  	    {% endfor %}
@@ -68,6 +70,7 @@
     </div>
     
     <br>
+    
     <!--Select datasets-->
     <div class="row">
         <div class="col-xs-1"></div>
@@ -77,14 +80,16 @@
     </div>
     <div class="row">
         
-         <div class="col-xs-1"></div>
-        <div class="col-xs-4">
-             
+        <div class="col-xs-1"></div>
+        <div class="col-xs-4" id = "filterdata">
             <select name="from[]" id="dataset" class="form-control" size="20" multiple="multiple">
-                {% for data in datasets %}
-					<option value={{data.pk}}>{{data.accNo}}<span>-</span>{{data.title}}</option>
-		  	    {% endfor %}
-            </select>
+     <!--           {% for data in datasets %}-->
+     <!--               {% if data.topic == 1 %}-->
+					<!--    <option value={{data.pk}}>{{data.accNo}}<span>-</span>{{data.title}}</option>-->
+					<!--{% endif %}-->
+		  	<!--    {% endfor %}-->
+            </select>       
+  
         </div>
         
         <div class="col-xs-2">
@@ -94,13 +99,15 @@
             <button type="button" id="dataset_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
         </div>
         
-        <div class="col-xs-4">
+        <div class="col-xs-4" id="filterdata_selected">
             <select name="to[]" id="dataset_to" class="form-control" size="20" multiple="multiple"></select>
         </div>
         <div class="col-xs-1"></div>
     </div>
     <br>
     
+
+     
     <div class="row">
         <div class="col-xs-1"></div>
         <div class="col-xs-3">
@@ -129,8 +136,40 @@
     
 <h1 id="message"></h1>
 
+
 <script type="text/javascript">
+    
+   
     jQuery(document).ready(function($) {
+        $('#topic').change(function() {
+            var tid =$(this).val();
+            var htmlContent = "";
+            
+            "{% for data in datasets %}"
+                var dataId = "{{data.topic}}";
+                if (dataId == tid) {
+                    htmlContent += "<option value={{data.pk}}>{{data.accNo}}<span>-</span>{{data.title}}</option>";
+                }
+            "{% endfor %}"
+            
+            document.getElementById("filterdata").innerHTML = 
+             "<select name='from[]' id='dataset' class='form-control' size='20' multiple='multiple'>"+
+                htmlContent+
+             "</select>";
+          document.getElementById("filterdata_selected").innerHTML =
+            '<select name="to[]" id="dataset_to" class="form-control" size="20" multiple="multiple"></select>';
+         
+            $('#dataset').multiselect({
+                search: {
+                    left: '<input type="text" name="s2" class="form-control" placeholder="Search..." />',
+                    right: '<input type="text" name="s2" class="form-control" placeholder="Search..." />',
+                },
+                fireSearch: function(value) {
+                    return value.length > 1;
+                }
+            });
+        });
+        // document.getElementById("topic").change();
         $("#success-alert").hide();
         $('#user').multiselect({
             search: {
@@ -210,9 +249,10 @@
                 }
                 
         }; 
-        
+
     });
-   
+    
+        
 </script>
 
 {% endblock %}

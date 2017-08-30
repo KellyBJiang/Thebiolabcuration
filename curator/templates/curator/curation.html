@@ -71,24 +71,23 @@
         </div>
     </div>
     <script>
-        var ncbinum ='{{dataset.accNo}}';
-        var ncbi_str = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+ncbinum;
-        //document.getElementById('renderpage_ncbi').src = ncbi_str;
-        // document.getElementById('renderpage_ncbi').src 
         var pubnum = '{{dataset.pubNo}}';
-        var pub_str = "https://www.ncbi.nlm.nih.gov/pubmed/"+pubnum;
-        if(pubnum.length > 1)
+        if(pubnum.length>=9)
         {
-            //document.getElementById('renderpage_pubmed').src = pub_str;
+            pubnum=pubnum.slice(0,8);
+        }
+        if(pubnum.length > 1)//ignore 2 pubmeds
+        {
             document.getElementById('pub_tab').innerHTML="<a data-toggle='pill' href='#menu2'>Pubmed</a>";
             var pmcinfo = JSON.parse('{{jsonString|escapejs}}');
             var pmcnum = pmcinfo.records[0].pmcid;
-            if(pmcnum != null && '{{pmc_delay}}' == -1)
+            if(pmcnum != null)
             {
-                var pmc_str ="https://www.ncbi.nlm.nih.gov/pmc/articles/"+pmcnum;
-                //document.getElementById('renderpage_pmc').src = pmc_str;
+                console.log("pmc_delay"+'{{pmc_delay}}');
                 document.getElementById('pmc_tab').innerHTML="<a data-toggle='pill' href='#menu3'>PMC</a>";
             }
         }
+       
+        
     </script>
 {% endblock %}
