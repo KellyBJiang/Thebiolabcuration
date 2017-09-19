@@ -41,6 +41,9 @@ def index(request,user):
     datasets_submitted = Dataset.objects.filter(pk__in = curation_submitted) #submitted list
     datasets_undicided = Dataset.objects.filter(pk__in = curation_undicided) #undicided list
     
+    topic = Topic.objects.all()
+    
+    
     template = loader.get_template('curator/index.html')
     
     context = {
@@ -57,6 +60,7 @@ def index(request,user):
         'datasets_undicided':datasets_undicided,
         'datasets_undicided_count':c_u.count(),
         'user_id':user,
+        'topic':topic,
     }
     if request.user.id == int(user) :
         return HttpResponse(template.render(context, request))

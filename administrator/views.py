@@ -11,9 +11,23 @@ import datetime
 # from .forms import MyUserCreationForm
 from .forms import UserRegisterForm
 
+#if user already logged in in session,use the login formation in the session
+def session_login(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/logged_in');
+    else:
+        return HttpResponseRedirect('/login');
+
+
+
 # Create your views here.
 @login_required
 def login(request):
+    # print "in login page"
+    # if request.user.is_authenticated():
+    #     return redirect("/account/invalid/")
+    # else:
+    print "in login page"
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
     user = auth.authenticate(username=username, password=password)
@@ -27,6 +41,7 @@ def login(request):
 @login_required       
 def logged_in(request):
     #role judgement
+    print "role judgement"
     if request.user.is_staff: #admin
          return HttpResponseRedirect('/ad/')
     else: #curator

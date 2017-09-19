@@ -35,9 +35,11 @@
     	        		"<tbody>"+
     	        		    "{% for c in  c_ids%}"+
     	        				"{% for data in datasets %}"+
-    	        					"{% if data.id == c.data_id_id %}"+
-    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
-    	        					"{% endif %}"+
+    	        					"{% with tid=1 %}"+
+	    	        					"{% if data.id == c.data_id_id %}"+
+	    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
+	    	        					"{% endif %}"+
+    	        					"{% endwith %}"+
     	        				"{% endfor %}"+
     	        			"{% endfor%}"+
 			  			"</tbody>"+

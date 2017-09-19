@@ -28,8 +28,8 @@ class Dataset(models.Model) :
     title = models.TextField(default=None, blank=True, null=True)
     accNo = models.TextField(default=None, blank=True, null=True)
     pubNo = models.TextField(default=None, blank=True, null=True)
-    complink = models.TextField(default=None, blank=True, null=True)
-    content = models.TextField(default=None, blank=True, null=True)
+    highlight = models.TextField(default=None, blank=True, null=True)
+    keywords = models.TextField(default=None, blank=True, null=True)
     topic = models.IntegerField(default = 0)
     # def __str__(self) :
     #     return self.title

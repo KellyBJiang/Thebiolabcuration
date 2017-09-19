@@ -220,3 +220,14 @@ CROSS JOIN
                     ALTER TABLE comments CONVERT TO CHARACTER SET utf8;
                     ALTER TABLE posts CONVERT TO CHARACTER SET utf8;
                 Run that code 
+#2017 09 13
+    1.logout on admin page
+    2. Dajngo Built-in template tags and filters
+        https://docs.djangoproject.com/en/dev/ref/templates/builtins/#with
+
+
+#2017 09 18
+    1. Django: Redirect logged in users from login page using the information already in session
+        https://stackoverflow.com/questions/2320581/django-redirect-logged-in-users-from-login-page
+        define session_login in views.py
+        
