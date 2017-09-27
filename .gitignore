@@ -1,5 +1,5 @@
 *.pyc
 *.log
-ncbi.html
-pmc.html
-pubmed.html
+curator/templates/curator/ncbi.html
+curator/templates/curator/pmc.html
+curator/templates/curator/pubmed.html
