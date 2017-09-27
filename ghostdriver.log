@@ -1,6 +1,0 @@
-Fontconfig warning: ignoring C.UTF-8: not a valid language tag
-PhantomJS is launching GhostDriver...
-[INFO  - 2017-09-27T16:28:27.794Z] GhostDriver - Main - running on port 44265
-[INFO  - 2017-09-27T16:28:28.706Z] Session [e4d022f0-a3a0-11e7-b8fc-ef8ff34e640d] - CONSTRUCTOR - Desired Capabilities: {"platform":"ANY","browserName":"phantomjs","version":"","javascriptEnabled":true}
-[INFO  - 2017-09-27T16:28:28.706Z] Session [e4d022f0-a3a0-11e7-b8fc-ef8ff34e640d] - CONSTRUCTOR - Negotiated Capabilities: {"browserName":"phantomjs","version":"1.9.0","driverName":"ghostdriver","driverVersion":"1.0.3","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2017-09-27T16:28:28.706Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: e4d022f0-a3a0-11e7-b8fc-ef8ff34e640d
