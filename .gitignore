@@ -1,1 +1,5 @@
 *.pyc
+*.log
+ncbi.html
+pmc.html
+pubmed.html
