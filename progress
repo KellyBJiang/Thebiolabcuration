@@ -288,7 +288,7 @@ CROSS JOIN
         - Error on a database: 'NoneType' object has no attribute 'encode'
             highlight.append(dataset.highlight.encode('utf-8'))  
             Fixed the "Highlight cannot be none" problem
-    
+    2. single and plural problem on highlight
 2017 09 27
     1.  highlight only seerated by semicolon
     2.  add gitignore
