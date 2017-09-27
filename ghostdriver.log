@@ -1,6 +1,6 @@
 Fontconfig warning: ignoring C.UTF-8: not a valid language tag
 PhantomJS is launching GhostDriver...
-[INFO  - 2017-09-27T15:25:19.589Z] GhostDriver - Main - running on port 45969
-[INFO  - 2017-09-27T15:25:20.503Z] Session [12de3b40-a398-11e7-b45c-f77bb754ce10] - CONSTRUCTOR - Desired Capabilities: {"platform":"ANY","browserName":"phantomjs","version":"","javascriptEnabled":true}
-[INFO  - 2017-09-27T15:25:20.503Z] Session [12de3b40-a398-11e7-b45c-f77bb754ce10] - CONSTRUCTOR - Negotiated Capabilities: {"browserName":"phantomjs","version":"1.9.0","driverName":"ghostdriver","driverVersion":"1.0.3","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2017-09-27T15:25:20.503Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 12de3b40-a398-11e7-b45c-f77bb754ce10
+[INFO  - 2017-09-27T15:47:56.732Z] GhostDriver - Main - running on port 52573
+[INFO  - 2017-09-27T15:47:57.646Z] Session [3bc9aaa0-a39b-11e7-93f9-054b9e9227f0] - CONSTRUCTOR - Desired Capabilities: {"platform":"ANY","browserName":"phantomjs","version":"","javascriptEnabled":true}
+[INFO  - 2017-09-27T15:47:57.646Z] Session [3bc9aaa0-a39b-11e7-93f9-054b9e9227f0] - CONSTRUCTOR - Negotiated Capabilities: {"browserName":"phantomjs","version":"1.9.0","driverName":"ghostdriver","driverVersion":"1.0.3","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2017-09-27T15:47:57.646Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 3bc9aaa0-a39b-11e7-93f9-054b9e9227f0
