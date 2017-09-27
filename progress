@@ -287,5 +287,15 @@ CROSS JOIN
     1. highlight
         - Error on a database: 'NoneType' object has no attribute 'encode'
             highlight.append(dataset.highlight.encode('utf-8'))  
+            Fixed the "Highlight cannot be none" problem
+    
+2017 09 27
+    1. highlight only seerated by semicolon
+    2. add gitignore
+         Once you've created the file, 
+         configure its location with git config:
+            $ touch ~/.gitignore
+            $ git config --global core.excludesFile .gitignore
+    3.
         
     
