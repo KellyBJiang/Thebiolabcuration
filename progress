@@ -294,13 +294,21 @@ CROSS JOIN
     2.  add gitignore
             Once you've created the file, 
             configure its location with git config:
-            cmd:
-            $ touch ~/.gitignore
-            $ git config --global core.excludesFile .gitignore
                 gitignore examples:
                     https://gist.github.com/octocat/9257657
                 gitignore tutorial:
                     https://www.atlassian.com/git/tutorials/gitignore
-    3.  
+                    
+            Solution:
+            1. cmd:
+                $ touch .gitignore  (This is my path to gitignore)
+                $ git config --global core.excludesFile .gitignore
+            2. delete the file that is about to ignore:
+                rm 'path_to_file'
+            3. add path_to_file in .gitignore file
+            4. git add. -> commit -> push
+            
+            
+    
         
     
