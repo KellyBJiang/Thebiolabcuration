@@ -376,9 +376,9 @@ def pmc(request,user,dataset_id,curation_id):
         highlight.append(dataset.keywords.encode('utf-8'))
     else:
          highlight.append('');
-    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[0]))
-    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[1])) 
-    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[2]))
+    soup_pattern.append(re.split(';' ,highlight[0]))
+    soup_pattern.append(re.split(';' ,highlight[1])) 
+    soup_pattern.append(re.split(';' ,highlight[2]))
     # REGULAR EXPRESSION highlight keywords
     highlight_keywords.append('') 
     highlight_keywords.append('')
