@@ -297,6 +297,10 @@ CROSS JOIN
             cmd:
             $ touch ~/.gitignore
             $ git config --global core.excludesFile .gitignore
+                gitignore examples:
+                    https://gist.github.com/octocat/9257657
+                gitignore tutorial:
+                    https://www.atlassian.com/git/tutorials/gitignore
     3.  
         
     
