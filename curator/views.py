@@ -43,6 +43,27 @@ def index(request,user):
     
     topic = Topic.objects.all()
     
+    select_topic = -1
+    if request.method == 'POST':
+        select_topic = request.POST.get('selector', False) 
+        print "What is select_topic? "
+        print int(select_topic)
+        # if select_topic == -1:
+        #     datasets = Dataset.objects.filter(pk__in = curation_data_ids) #to do list
+        #     datasets_submitted = Dataset.objects.filter(pk__in = curation_submitted) #submitted list
+        #     datasets_undicided = Dataset.objects.filter(pk__in = curation_undicided) #undicided list
+        # else:
+        #     datasets = Dataset.objects.filter(pk__in = curation_data_ids, topic = select_topic) #to do list
+        #     datasets_submitted = Dataset.objects.filter(pk__in = curation_submitted,topic = select_topic) #submitted list
+        #     datasets_undicided = Dataset.objects.filter(pk__in = curation_undicided,topic = select_topic) #undicided list
+
+          
+    # topic = Topic.objects.filter(pk = select_topic)
+    # topic = Topic.objects.all()
+    
+    
+    
+    
     
     template = loader.get_template('curator/index.html')
     
@@ -60,7 +81,8 @@ def index(request,user):
         'datasets_undicided':datasets_undicided,
         'datasets_undicided_count':c_u.count(),
         'user_id':user,
-        'topic':topic,
+        'topics':topic,
+        'select_topic':int(select_topic),
     }
     if request.user.id == int(user) :
         return HttpResponse(template.render(context, request))
@@ -99,26 +121,50 @@ def curation(request,user,dataset_id,curation_id):
     cj = cookielib.LWPCookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     urllib2.install_opener(opener)
-    
+     
     
     #highlight on NCBI page
-    highlight = topic.highlihgt.encode('utf-8')
-    soup_pattern=re.split(r'[;,\s]\s*' ,highlight)
-    
+    highlight = []
+    soup_pattern = []
+    highlight_keywords = []
+
+    if topic.highlihgt != None:
+        highlight.append(topic.highlihgt.encode('utf-8')) 
+    else:
+        highlight.append('');
+    if dataset.highlight != None:
+        highlight.append(dataset.highlight.encode('utf-8')) 
+    else:
+        highlight.append('');
+    if dataset.keywords != None:
+        highlight.append(dataset.keywords.encode('utf-8'))
+    else:
+         highlight.append('');
+
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[0]))
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[1])) 
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[2]))
     # REGULAR EXPRESSION highlight keywords
-    highlight_keywords=''
-    for phrase in soup_pattern:
-        if len(phrase) >= 3 :
-            highlight_keywords+="(\\b"+str(phrase)+"\\b)|"
-    highlight_keywords += '\b'
-    regex = re.compile(highlight_keywords, re.IGNORECASE)
+    highlight_keywords.append('') 
+    highlight_keywords.append('')
+    highlight_keywords.append('')
+    regex = []
+    for i in range(3):
+        if len(soup_pattern) != 0:
+            for phrase in soup_pattern[i]:
+                if len(phrase) >= 3 :
+                    highlight_keywords[i]+="(\\b"+str(phrase)+"(s?)"+"\\b)|"
+            highlight_keywords[i] += '\b'
+            regex.append(re.compile(highlight_keywords[i], re.IGNORECASE))
+    
+    
     
     
     #Download ncbi page, replace the wrong urls
     url_n = "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+accNo
     req_n = urllib2.Request(url_n)
     operate_n = opener.open(req_n)
-    msg_n = operate_n.read()
+    msg_n = operate_n.read() #content of ncbi page
     document_n = 'curator/templates/curator/ncbi.html'  
     file_ = open(document_n,'w')  
     msg_n = msg_n.replace('src="','src="https://www.ncbi.nlm.nih.gov')
@@ -134,13 +180,33 @@ def curation(request,user,dataset_id,curation_id):
     soup_string_n = str(soup_n)
     #highlight ncbi
     i = 0; output=""
-    for m in regex.finditer(soup_string_n):
+    for m in regex[0].finditer(soup_string_n):
         output += "".join([soup_string_n[i:m.start()],
-                           "<mark>",
+                           "<mark style='background-color:#ffb7b7;'>", #red
                            soup_string_n[m.start():m.end()],
                            "</mark>"])
         i = m.end() 
     soup_string_n= "".join([output, soup_string_n[i:]])
+    
+    i = 0; output=""
+    for m in regex[1].finditer(soup_string_n):
+        output += "".join([soup_string_n[i:m.start()],
+                           "<mark style='background-color:#a8d1ff;'>", #blue
+                           soup_string_n[m.start():m.end()],
+                           "</mark>"])
+        i = m.end() 
+    soup_string_n= "".join([output, soup_string_n[i:]])
+    
+    i = 0; output=""
+    for m in regex[2].finditer(soup_string_n):
+        output += "".join([soup_string_n[i:m.start()],
+                           "<mark style='background-color:#fff2a8;'>", #yellow
+                           soup_string_n[m.start():m.end()],
+                           "</mark>"])
+        i = m.end() 
+    soup_string_n= "".join([output, soup_string_n[i:]])
+    
+    
     file_.write(soup_string_n)
     file_.close()
     # Get pmc number
@@ -190,31 +256,83 @@ def pubmed(request,user,dataset_id,curation_id):
     # Get highlight keywords
     topic_id = Curation.objects.values_list('topic_id',flat = True).get(pk=curation_id)
     topic = Topic.objects.get(pk = topic_id)
-    #highlight on NCBI page
-    highlight = topic.highlihgt.encode('utf-8')
-    soup_pattern=re.split(r'[;,\s]\s*' ,highlight)
+    dataset = Dataset.objects.get(pk = dataset_id)
+    #highlight on pubmed page
+    
+    highlight = []
+    soup_pattern = []
+    highlight_keywords = []
+    
+    if topic.highlihgt != None:
+        highlight.append(topic.highlihgt.encode('utf-8')) 
+    else:
+        highlight.append('');
+    if dataset.highlight != None:
+        highlight.append(dataset.highlight.encode('utf-8')) 
+    else:
+        highlight.append('');
+    if dataset.keywords != None:
+        highlight.append(dataset.keywords.encode('utf-8'))
+    else:
+         highlight.append('');
+         
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[0]))
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[1])) 
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[2]))
     # REGULAR EXPRESSION highlight keywords
-    highlight_keywords=''
-    for phrase in soup_pattern:
-        if len(phrase) >= 3 :
-            highlight_keywords+="(\\b"+str(phrase)+"\\b)|"
-    highlight_keywords += '\b'
-    regex = re.compile(highlight_keywords, re.IGNORECASE)
-
+    highlight_keywords.append('') 
+    highlight_keywords.append('')
+    highlight_keywords.append('')
+    
+    regex = []
+    for i in range(3):
+        if len(soup_pattern) != 0:
+            for phrase in soup_pattern[i]:
+                if len(phrase) >= 3 :
+                    highlight_keywords[i]+="(\\b"+str(phrase)+"(s?)"+"\\b)|"
+            highlight_keywords[i] += '\b'
+            regex.append(re.compile(highlight_keywords[i], re.IGNORECASE))
+    
+    #Download pubmed page
     url = 'https://www.ncbi.nlm.nih.gov/pubmed/'+pubmedid
     response = urllib2.urlopen(url)
     msg_pmed = response.read()
     
     # Highlight on Pubmed page
     i = 0; output=""
-    for m in regex.finditer(msg_pmed):
+    for m in regex[0].finditer(msg_pmed):
         output += "".join([msg_pmed[i:m.start()],
-                          "<mark>",
+                          "<mark style='background-color:#ffb7b7;'>",
                           msg_pmed[m.start():m.end()],
                           "</mark>"])
         i = m.end() 
     msg_pmed= "".join([output, msg_pmed[i:]])
+
+    i = 0; output=""
+    for m in regex[1].finditer(msg_pmed):
+        output += "".join([msg_pmed[i:m.start()],
+                          "<mark style='background-color:#a8d1ff;'>",
+                          msg_pmed[m.start():m.end()],
+                          "</mark>"])
+        i = m.end() 
+    msg_pmed= "".join([output, msg_pmed[i:]])
+
     
+    
+    i = 0; output=""
+    for m in regex[2].finditer(msg_pmed):
+        output += "".join([msg_pmed[i:m.start()],
+                          "<mark style='background-color:#fff2a8;'>",
+                          msg_pmed[m.start():m.end()],
+                          "</mark>"])
+        i = m.end() 
+    msg_pmed= "".join([output, msg_pmed[i:]])
+
+
+
+
+
+
     f = open('curator/templates/curator/lava.html', 'w')
     f.write(msg_pmed)
     f.close()
@@ -233,16 +351,43 @@ def pmc(request,user,dataset_id,curation_id):
     # Get highlight keywords
     topic_id = Curation.objects.values_list('topic_id',flat = True).get(pk=curation_id)
     topic = Topic.objects.get(pk = topic_id)
-    #highlight on NCBI page
-    highlight = topic.highlihgt.encode('utf-8')
-    soup_pattern=re.split(r'[;,\s]\s*' ,highlight)
+    dataset = Dataset.objects.get(pk = dataset_id)
+    #highlight on pmc page
+    
+    highlight = []
+    soup_pattern = []
+    highlight_keywords = []
+    if topic.highlihgt != None:
+        highlight.append(topic.highlihgt.encode('utf-8')) 
+    else:
+        highlight.append('');
+    if dataset.highlight != None:
+        highlight.append(dataset.highlight.encode('utf-8')) 
+    else:
+        highlight.append('');
+    if dataset.keywords != None:
+        highlight.append(dataset.keywords.encode('utf-8'))
+    else:
+         highlight.append('');
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[0]))
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[1])) 
+    soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[2]))
     # REGULAR EXPRESSION highlight keywords
-    highlight_keywords=''
-    for phrase in soup_pattern:
-        if len(phrase) >= 3 :
-            highlight_keywords+="(\\b"+str(phrase)+"\\b)|"
-    highlight_keywords += '\b'
-    regex = re.compile(highlight_keywords, re.IGNORECASE)
+    highlight_keywords.append('') 
+    highlight_keywords.append('')
+    highlight_keywords.append('')
+    
+    regex = []
+    for i in range(3):
+        if len(soup_pattern) != 0:
+            for phrase in soup_pattern[i]:
+                if len(phrase) >= 3 :
+                    highlight_keywords[i]+="(\\b"+str(phrase)+"(s?)"+"\\b)|"
+            highlight_keywords[i] += '\b'
+            regex.append(re.compile(highlight_keywords[i], re.IGNORECASE))
+    
+    
+    
     
     #download the pmc page
     # pmc_delay = 0
@@ -258,14 +403,34 @@ def pmc(request,user,dataset_id,curation_id):
             #check if the actual paper is delayed
             pmc_delay = msg_pmc.find("This article has a delayed release")
             # Highlight on PMC page
+            
             i = 0; output=""
-            for m in regex.finditer(msg_pmc):
+            for m in regex[0].finditer(msg_pmc):
                 output += "".join([msg_pmc[i:m.start()],
-                                  "<mark>",
+                                  "<mark style='background-color:#ffb7b7;'>",
                                   msg_pmc[m.start():m.end()],
                                   "</mark>"])
                 i = m.end() 
             msg_pmc= "".join([output, msg_pmc[i:]])
+            
+            i = 0; output=""
+            for m in regex[1].finditer(msg_pmc):
+                output += "".join([msg_pmc[i:m.start()],
+                                  "<mark style='background-color:#a8d1ff;'>",
+                                  msg_pmc[m.start():m.end()],
+                                  "</mark>"])
+                i = m.end() 
+            msg_pmc= "".join([output, msg_pmc[i:]])
+            
+            i = 0; output=""
+            for m in regex[2].finditer(msg_pmc):
+                output += "".join([msg_pmc[i:m.start()],
+                                  "<mark style='background-color:#fff2a8;'>",
+                                  msg_pmc[m.start():m.end()],
+                                  "</mark>"])
+                i = m.end() 
+            msg_pmc= "".join([output, msg_pmc[i:]])
+            
             cov.write(msg_pmc)
             msg_pmc_obj.quit()
             cov.close()

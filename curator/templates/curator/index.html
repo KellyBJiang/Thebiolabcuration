@@ -3,11 +3,36 @@
 	{% if request.user.is_authenticated %}
 		<!--navbar-->
 		<nav class="navbar navbar-default" style="background-color: #e3f2fd;">
-		  <div class="container-fluid">                                                                                                                                         
-		      <div id = "nav"></div>
-		    <ul class="nav navbar-nav navbar-right"> 
-				 <li> <a href="/logout/">Log Out </a></li>
-			</ul>    
+			<div class = "continer">
+				<div class = "row">
+					<div class = "col-sm-1">
+						
+					</div>
+					<div class = "col-sm-1">
+						<form method="post" name = "selector_topic">
+					     	{% csrf_token %}
+							<select name="selector" onchange="reply_select()"  style="margin-top:20px">
+								<option value=-1 >All topics</option>
+								{% for topic in topics %}
+									{% if select_topic == topic.pk %}
+										<option value={{topic.pk}} selected>{{topic.topic}}</option>
+									{% else %}
+										<option value={{topic.pk}} >{{topic.topic}}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
+							<input id="select_button" style="display: none;" type="submit" value="Select">
+						</form>
+					</div>
+					<div class = "col-sm-6">
+				    	<div id = "nav"></div>
+				    </div>
+				    <div class = "col-sm-2">
+					    <ul class="nav navbar-nav navbar-right"> 
+							 <li> <a href="/logout/">Log Out </a></li>
+						</ul>    
+					</div>
+				</div>
 			</div>
 		</nav>
 		<div class="container">
@@ -16,10 +41,29 @@
 		</div>
 		
 <script>
+	// var select_topic = document.getElementById("topic").value;
+	// console.log(select_topic);
+	//   function SelectTopic()
+	//   {
+	//   	select_topic = document.getElementById("topic").value;
+	//   	console.log(select_topic);
+	//   }
+	
+	
+	
+	function reply_select()
+	{
+		document.getElementById("select_button").click();
+	}
+	
+	
+	
+	
 	reply_click(0);
+
     function reply_click(clicked_id)
     {
-       if(clicked_id == 0)
+       if(clicked_id == 0) //To do
        {
        		document.getElementById("nav").innerHTML = 
        		'<ul class="nav navbar-nav">'+
@@ -31,13 +75,19 @@
            document.getElementById("display").innerHTML = 
         		"<h5>Welcome  {{user.username}}, you have {{datasets_count}} assigments:</h5>"+
      	        	"<table id='to_do' class='table table-hover'>"+
-     	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
+     	        		"<thead><tr><th>Accession</th><th>Title</th><th>Keywords</th></tr></thead>"+
     	        		"<tbody>"+
     	        		    "{% for c in  c_ids%}"+
     	        				"{% for data in datasets %}"+
     	        					"{% with tid=1 %}"+
-	    	        					"{% if data.id == c.data_id_id %}"+
-	    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
+	    	        					"{% if select_topic < 0  %}"+
+	    	        						"{% if data.id == c.data_id_id%}"+
+	    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td></tr>"+
+	    	        						"{% endif %}"+
+	    	        					"{% else %}"+
+	    	        						"{% if  data.id == c.data_id_id and data.topic == select_topic%}"+
+	    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td></tr>"+
+											"{% endif%}"+
 	    	        					"{% endif %}"+
     	        					"{% endwith %}"+
     	        				"{% endfor %}"+
@@ -45,7 +95,7 @@
 			  			"</tbody>"+
 			  		"</table>";
        }
-        if(clicked_id==1)
+        if(clicked_id==1) //Submitted
         {
         	document.getElementById("nav").innerHTML = 
        		'<ul class="nav navbar-nav">'+
@@ -57,20 +107,33 @@
             content.innerHTML = 
             	"<h5>Welcome  {{user.username}}, you have {{datasets_submitted_count}} submitted assigments:</h5>"+
        	        	"<table id='submitted' class='table'>"+
-       	        		"<thead><tr><th>Accession</th><th>Title</th><th>Result</th></tr></thead>"+
+       	        		"<thead><tr><th>Accession</th><th>Title</th><th>Keywords</th><th>Result</th></tr></thead>"+
        	        		"<tbody>"+
        	        			"{% for c in  c_s %}"+
        	    	        		"{% for data in datasets_submitted %}"+
-    	        					"{% if data.id == c.data_id_id %}"+
-    	        						"{%  if c.result == 'Y' %}"+
-    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>Yes</td></tr>"+
-    	        						"{% elif c.result == 'N'%}"+
-    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>No</td></tr>"+
-										"{% elif c.result == 'U'%}"+
-											"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>Undecided</td></tr>"+
-    	        						"{%  endif %}"+
-    	        						// "<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{res}}</td></tr>"+
-    	        					"{% endif %}"+
+       	    	        			"{% if select_topic < 0  %}"+
+	    	        					"{% if data.id == c.data_id_id %}"+
+	    	        						"{%  if c.result == 'Y' %}"+
+	    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td><td>Yes</td></tr>"+
+	    	        						"{% elif c.result == 'N'%}"+
+	    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td><td>No</td></tr>"+
+											"{% elif c.result == 'U'%}"+
+												"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td><td>Undecided</td></tr>"+
+	    	        						"{%  endif %}"+
+	    	        						// "<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{res}}</td></tr>"+
+	    	        					"{% endif %}"+
+	    	        				"{% else %}"+
+	    	        					"{% if data.id == c.data_id_id and data.topic == select_topic%}"+
+	    	        						"{%  if c.result == 'Y' %}"+
+	    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td><td>Yes</td></tr>"+
+	    	        						"{% elif c.result == 'N'%}"+
+	    	        							"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td><td>No</td></tr>"+
+											"{% elif c.result == 'U'%}"+
+												"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td><td>Undecided</td></tr>"+
+	    	        						"{%  endif %}"+
+	    	        						// "<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{res}}</td></tr>"+
+	    	        					"{% endif %}"+
+	    	        				"{% endif %}"+
     	        				"{% endfor %}"+
     	        			"{% endfor%}"+
 			  	  //  		"{% for data in datasets_submitted %}"+
@@ -79,7 +142,7 @@
 			  			"</tbody>"+
 			  		"</table>";
         }
-        if(clicked_id==2)
+        if(clicked_id==2)  //Undecided
         {
         	document.getElementById("nav").innerHTML = 
        		'<ul class="nav navbar-nav">'+
@@ -90,14 +153,22 @@
             document.getElementById("display").innerHTML = 
             	"<h5>Welcome  {{user.username}}, you have {{datasets_undicided_count}} undicided assigments:</h5>"+
        	        	"<table id='undecided' class='table'>"+
-       	        		"<thead><tr><th>Accession</th><th>Title</th></tr></thead>"+
+       	        		"<thead><tr><th>Accession</th><th>Title</th><th>Keywords</th></tr></thead>"+
        	        		"<tbody>"+
        	        			"{% for c in c_u %}"+
-       	    	        		"{% for data in datasets_undicided %}"+
-    	        					"{% if data.id == c.data_id_id %}"+
-    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td></tr>"+
-    	        					"{% endif %}"+
-    	        				"{% endfor %}"+
+       	        				"{% if select_topic < 0  %}"+
+	       	    	        		"{% for data in datasets_undicided %}"+
+	    	        					"{% if data.id == c.data_id_id %}"+
+	    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td></tr>"+
+	    	        					"{% endif %}"+
+	    	        				"{% endfor %}"+
+	    	        			"{% else %}"+
+	    	        				"{% for data in datasets_undicided %}"+
+	    	        					"{% if data.id == c.data_id_id and data.topic == select_topic%}"+
+	    	        						"<tr><td>{{data.accNo}}</td><td align='left'><a href ='/curator/{{user_id}}/dataset/{{data.id}}/{{c.id}}'>{{c.data_id}}</a></td><td>{{data.keywords}}</td></tr>"+
+	    	        					"{% endif %}"+
+	    	        				"{% endfor %}"+
+	    	        			"{% endif %}"+
     	        			"{% endfor%}"+
 			  			"</tbody>"+
 			  		"</table>";

@@ -17,7 +17,7 @@
  use curation_biolab
  
  +loadfile:
- +load data local infile '/home/ubuntu/workspace/administrator/migrations/tmp/mm.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo,topic);
+ +load data local infile '/home/zhaoli/curation/administrator/migrations/tmp/mm.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo,topic);
  +
  +
  +INSERT INTO administrator_curation (data_id_id, user_id_id, topic_id_id) SELECT id FROM administrator_dataset UNION SELECT id FROM auth_user UNION SELECT id FROM administrator_topic where id=1;
@@ -231,3 +231,61 @@ CROSS JOIN
         https://stackoverflow.com/questions/2320581/django-redirect-logged-in-users-from-login-page
         define session_login in views.py
         
+    2.pull from github to scorpii:
+    Error: 
+        ImportError at / No module named bs4
+        active virtualenvironment https://tutorial.djangogirls.org/en/django_installation/
+        Solution:active virtual evn use cmd: source curation_env/bin/activate
+        install beautifulsoup and selenium(previous log has some info)
+    Error : django system admin page CSS missing
+        chang1:settings.py: add STATIC_ROOT:'static/'
+        sudo python manage.py collectstatic
+    Error: http://scorpii.ece.tamu.edu/curator/2/dataset/80/1/
+        IOError at /curator/2/dataset/80/1/
+        [Errno 2] No such file or directory: 'curator/templates/curator/ncbi.html'
+        Solution: Changed in views.py the path to ncbi.html
+        document_n = '/home/zhaoli/curation/curator/templates/curator/ncbi.html'
+    
+    ERROR:Couldn’t find a tree builder with the features you requeste d: html5lib.
+        Solution：sudo -H pip install html5lib
+    ERROR:Exception Value: context must be a dict rather than WSGIRequest
+        https://stackoverflow.com/questions/44127250/exception-value-context-must-be-a-dict-rather-than-wsgirequest
+        Which is because the first parameter is supposed to be a dictionary. You had perhaps mixed this up with the render short cut
+        template = loader.get_template('irtf/index.html')
+        return HttpResponse( template.render({}, request))
+        To use the render shortcut instead
+        return render(request,'irtf/index.html')
+        Solution: template.render add a '{}', then it's solved. the first parameter is a path.
+    Phantomjs:
+    Error:  Permission denied: 'ghostdriver.log
+           Solution: msg_pmc_obj = webdriver.PhantomJS( service_log_path=os.path.devnull, service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'] )
+    Error:
+    PMC page:WebDriverException at /curator/2/dataset/208/4/pmc.html/
+            Message: 'phantomjs' executable needs to be in PATH. 
+            Solution:active virtula env, 
+                    sudo pip install selenium
+                    sudo apt-get install phantomjs
+            After install:
+                    ERROR:  Message: Service phantomjs unexpectedly exited. Status code was: -6
+                    Error: WebDriverException: Message: 'phantomjs' executable may have wrong permissions. 
+                        Solution: download phantomjs, set executable_path = './phantomjs-2.1.1-linux-x86_64/bin/phantomjs' in views.py
+                            http://phantomjs.org/download.html
+                            wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 (right click copy address)
+                            tar -xvjf filename
+                            in views.py, set executable_path = "/usr/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
+                            restart apache: service apache2 restart
+           
+    
+#2017 09 25
+    1.continue with adding topic on index:
+        - keey record of selected topic
+        - cleaned the data in database(Error caused by dirty data)
+        - add keyword on index page
+
+
+#2017 09 26
+    1. highlight
+        - Error on a database: 'NoneType' object has no attribute 'encode'
+            highlight.append(dataset.highlight.encode('utf-8'))  
+        
+    
