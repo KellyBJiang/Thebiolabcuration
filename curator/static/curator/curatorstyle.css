@@ -78,3 +78,10 @@ input[type=radio]:checked ~ .check::before{
 input[type=radio]:checked ~ label{
   color: #2d393d;
 }
+
+#welcome {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-left : 15rem;
+    margin-right : -8rem;
+}

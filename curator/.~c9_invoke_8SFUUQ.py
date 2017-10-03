@@ -36,112 +36,59 @@ from django.core import serializers
 #INDEX PAGE
 @login_required(login_url='/')
 def index(request,user):
-    
-    c_ids = Curation.objects.filter(user_id = user,submit = False) #to do curation
+In
     c_s = Curation.objects.filter(user_id = user,submit = True)
     c_u = Curation.objects.filter(user_id = user,result='U')
 
     curation_data_ids = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,submit = False)
     curation_submitted = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,submit = True)
-    curation_undecided = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,result='U')
+    curation_undicided = Curation.objects.values_list('data_id',flat=True).filter(user_id = user,result='U')
     
     datasets = Dataset.objects.filter(pk__in = curation_data_ids) #to do list
     datasets_submitted = Dataset.objects.filter(pk__in = curation_submitted) #submitted list
-    datasets_undecided = Dataset.objects.filter(pk__in = curation_undecided) #undicided list
+    datasets_undicided = Dataset.objects.filter(pk__in = curation_undicided) #undicided list
     topic = Topic.objects.all()
-    
-    #select topic,items_per_page post
+#pagination    
+    page = request.GET.get('page', 1)
+    paginator = Paginator(datasets, 10)
+    try:
+        datasets = paginator.page(page)
+    except PageNotAnInteger:
+        datasets = paginator.page(1)
+    except EmptyPage:
+        datasets = paginator.page(paginator.num_pages)
+#select topic post
     select_topic = request.session.get('select_topic',-1)
-    items_per_page = request.session.get('items_per_page',10)
-    nav = request.session.get('nav',0)
-    
-    
     if request.method == 'POST':
         select_topic = request.POST.get('selector',  request.session.get('select_topic',-1)) 
-        request.session['select_topic'] = select_topic
-        
-        items_per_page = request.POST.get('items_per_page',  request.session.get('items_per_page',10)) 
-        request.session['items_per_page'] = items_per_page  
-        
-        nav = request.POST.get('navbar',request.session.get('nav',0))
-        request.session['nav'] = nav  
-        
-        
-    
-    select_topic = int(select_topic)
-        
-        
-        
-    nav = int(nav)
-    if nav == 0:
-        if select_topic == -1:
-            print "nav = 0, select = -1"
-            c_ids = Curation.objects.filter(user_id = user,submit = False) #to do curation
-        else:
-            print "nav = 0, select != -1"
-            c_ids = Curation.objects.filter(user_id = user,topic_id = select_topic, submit = False) #to do curation
-            datasets = datasets.filter(topic = select_topic)
-            
-        curation = c_ids
-        dataset = datasets
-        print "TODO curation:"
-        print curation.count()
-    elif nav == 1:
-        if select_topic == -1:
-            print "nav = 1, select = -1"
-            c_s = Curation.objects.filter(user_id = user,submit = True)
-        else:
-            print "nav = 1, select != -1"
-            c_s = Curation.objects.filter(user_id = user,topic_id = select_topic, submit = True)
-            datasets_submitted = datasets_submitted.filter(topic = select_topic)
-            
-        curation = c_s
-        dataset = datasets_submitted
-        print "SUBMITTED curation:"
-        print curation.count()
-    else:
-        if select_topic == -1:
-            print "nav = 2, select = -1"
-            c_u = Curation.objects.filter(user_id = user,result='U')
-        else:
-            print "nav = 2, select != -1"
-            c_u = Curation.objects.filter(user_id = user,topic_id = select_topic, result='U')
-            datasets_undecided = datasets_undecided.filter(topic = select_topic)
-            
-        curation = c_u
-        dataset = datasets_undecided
-        print "UNDECIDED curation:"
-        print curation.count()
-
-    #pagination    
-    page = request.GET.get('page', 1)
-    paginator = Paginator(dataset, items_per_page)
-    try:
-        dataset = paginator.page(page)
-    except PageNotAnInteger:
-        dataset = paginator.page(1)
-    except EmptyPage:
-        dataset = paginator.page(paginator.num_pages)
-
-        
-        
-        
         
 
+    c_s_count = c_s.count();
+    #c_s = serializers.serialize("json", c_s)
+    #datasets_submitted = serializers.serialize("json", datasets_submitted)
+    # all = list(c_s) + list(datasets_submitted)
+    # c_s = serializers.serialize('json', all)
     template = loader.get_template('curator/index.html')
-
-    count = curation.count()
+    
     context = {
-        'curation' :curation,
-        'dataset' : dataset,
-        'select_topic' : int(select_topic),
-        'items_per_page' : int(items_per_page),
-        'topics':topic,
+        'c_ids':c_ids, #to do curation id
+        'c_s':c_s,#submitted curation id
+        'c_u':c_u,# undecided curation id
+        'curation_data_ids':curation_data_ids, #To do curation_dataset_id
+        'curation_submitted':curation_submitted, # submited curations id
+        'curation_undicided' : curation_undicided, # undecided curations id
+        'datasets':datasets, #to do list
+        'datasets_count':c_ids.count(),
+        'datasets_submitted':datasets_submitted,
+        'datasets_submitted_count': c_s_count, #,c_s.count()
+        'datasets_undicided':datasets_undicided,
+        'datasets_undicided_count':c_u.count(),
         'user_id':user,
-        'nav':nav,
-        "count":count,
+        'topics':topic,
+        'select_topic':int(select_topic),
     }
     
+    # context_json = serializers.serialize("json", context);
     if request.user.id == int(user) :
         return HttpResponse(template.render(context, request))
     else:
