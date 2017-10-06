@@ -8,7 +8,7 @@
 					<div class = "col-sm-2">
 						<form method="post" action={% url 'index' user_id %}>
 					     	{% csrf_token %}
-							<select name="selector" onchange="reply_select()"  style="margin-top:20px">
+							<select class="selectpicker" name="selector" onchange="reply_select()"  style="margin-top:20px">
 								<option value=-1 >All topics</option>
 								{% for topic in topics %}
 									{% if select_topic == topic.pk %}
@@ -38,9 +38,9 @@
 					
 					<div class = "col-sm-4">
 						<ul id="navbar_ul"  class="nav navbar-nav">
-					       		<li id="0" class="active"><a>To Do</a></li>
-					       		<li id="1" ><a>Submitted</a></li>
-					       		<li id="2" ><a>Undecided</a></li>
+					       		<li id="0" ><a href = "#">To Do</a></li>
+					       		<li id="1" ><a href = "#">Submitted</a></li>
+					       		<li id="2" ><a href = "#">Undecided</a></li>
 				       	</ul>
 						<form id="navbar_form" method="post" action={% url 'index' user_id %} style="display:none">
 					     	{% csrf_token %}
@@ -120,11 +120,11 @@
 			<!--Pagination at back-end-->
 			{% if dataset.has_other_pages %}
 				<ul class="pagination">
-					{% if dataset.has_previous %}
-						<li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
-					{% else %}
-						<li class="disabled"><span>&laquo;</span></li>
-					{% endif %}
+					<!--{% if dataset.has_previous %}-->
+					<!--	<li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>-->
+					<!--{% else %}-->
+					<!--	<li class="disabled"><span>&laquo;</span></li>-->
+					<!--{% endif %}-->
 					{% for i in dataset.paginator.page_range %}
 						{% if dataset.number == i %}
 							<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
@@ -132,26 +132,14 @@
 							<li><a href="?page={{ i }}">{{ i }}</a></li>
 						{% endif %}
 					{% endfor %}
-					{% if dataset.has_next %}
-						<li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
-					{% else %}
-						<li class="disabled"><span>&raquo;</span></li>
-					{% endif %}
+					<!--{% if dataset.has_next %}-->
+					<!--	<li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>-->
+					<!--{% else %}-->
+					<!--	<li class="disabled"><span>&raquo;</span></li>-->
+					<!--{% endif %}-->
 				</ul>
 			{% endif %}
 		</div>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 
 <script>
 	

@@ -8,6 +8,8 @@ import requests
 import json 
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.db import connection
+
 
 # highlight
 import urllib2
@@ -29,6 +31,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 #pass json object to django
 from django.core import serializers
+
+
+
 
 
 
@@ -171,6 +176,7 @@ def curation(request,user,dataset_id,curation_id):
     cur_submit = Curation.objects.values_list('submit',flat = True).get(pk=curation_id)
     
     
+    
     #define template:
     template = loader.get_template('curator/curation.html')
     
@@ -287,6 +293,7 @@ def curation(request,user,dataset_id,curation_id):
             curation.submit = True
             curation.date = timezone.now()
             curation.save()
+            connection.close()
             if c_ids.count() > 0:
                 return redirect("curation",user = user,dataset_id = c_ids[0].data_id_id,curation_id = int(c_ids[0].pk))
             else:
@@ -313,6 +320,7 @@ def ncbi(request,user,dataset_id,curation_id):
     template = loader.get_template('curator/ncbi.html')
     return HttpResponse(template.render(request))
     
+    
 def pubmed(request,user,dataset_id,curation_id):
     pubmedid = Dataset.objects.values_list('pubNo',flat = True).get(pk = dataset_id)
     # Get highlight keywords
@@ -320,7 +328,7 @@ def pubmed(request,user,dataset_id,curation_id):
     topic = Topic.objects.get(pk = topic_id)
     dataset = Dataset.objects.get(pk = dataset_id)
     #highlight on pubmed page
-    
+
     highlight = []
     soup_pattern = []
     highlight_keywords = []

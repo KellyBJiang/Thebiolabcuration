@@ -238,6 +238,7 @@ CROSS JOIN
         Solution:active virtual evn use cmd: source curation_env/bin/activate
         install beautifulsoup and selenium(previous log has some info)
     Error : django system admin page CSS missing
+    Similar ERROR: assign page cannot select users and datasets
         chang1:settings.py: add STATIC_ROOT:'static/'
         sudo python manage.py collectstatic
     Error: http://scorpii.ece.tamu.edu/curator/2/dataset/80/1/
@@ -256,9 +257,12 @@ CROSS JOIN
         To use the render shortcut instead
         return render(request,'irtf/index.html')
         Solution: template.render add a '{}', then it's solved. the first parameter is a path.
+                then restart apache: service apache2 restart
     Phantomjs:
     Error:  Permission denied: 'ghostdriver.log
            Solution: msg_pmc_obj = webdriver.PhantomJS( service_log_path=os.path.devnull, service_args=['--ignore-ssl-errors=true', '--ssl-protocol=TLSv1'] )
+    Error: global name 'os' is not defined
+            Solution: import os
     Error:
     PMC page:WebDriverException at /curator/2/dataset/208/4/pmc.html/
             Message: 'phantomjs' executable needs to be in PATH. 
@@ -274,6 +278,12 @@ CROSS JOIN
                             tar -xvjf filename
                             in views.py, set executable_path = "/usr/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
                             restart apache: service apache2 restart
+                            PS:
+                            driver = webdriver.PhantomJS(executable_path= "/usr/share/phantomjs-2.1.1-linux-x86_64/bin/phyntomjs", desired_capabilities=dcap)
+                            https://github.com/detro/ghostdriver/issues/465
+                    ERROR: Message: 'phyntomjs' executable needs to be in PATH. 
+                        (Re check the excutable_path:copy paste)
+
            
     
 #2017 09 25
@@ -289,7 +299,7 @@ CROSS JOIN
             highlight.append(dataset.highlight.encode('utf-8'))  
             Fixed the "Highlight cannot be none" problem
     2. single and plural problem on highlight
-2017 09 27
+2017 09 27-10.2
     1.  highlight only seerated by semicolon
     2.  add gitignore
             Once you've created the file, 
@@ -308,7 +318,11 @@ CROSS JOIN
             3. add path_to_file in .gitignore file
             4. git add. -> commit -> push
             
-            
+    3.fix index page :
+        front-end filter-> back-end filter
+        store get current states data through session
     
-        
+2017/ 10/ 4
+    linux: open new terminal: ctrl + shift + n
+    
     

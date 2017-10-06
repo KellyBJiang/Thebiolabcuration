@@ -10,6 +10,8 @@
             <li><a data-toggle="pill" href="#menu1">GEO</a></li>
             <li id="pub_tab"></li>
             <li id="pmc_tab"></li>
+            <li ><a href="#" id = "back" onclick="history.back();"><button><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Go Back</button></a></li>
+            <li ><a href="#" id = "forward" onclick="history.forward();"><button><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> Go Forward</button></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right "> 
 			<li> <a href="/logout/">Log Out </a></li>
@@ -18,10 +20,10 @@
     <div class="row">
     	<div class="col-sm-9">
     	    <!--Back and forward button-->
-    	    <div class="pull-right">
-                    <input type="button" class="btn btn-info" value="Back" onclick="history.back();">
-                    <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">
-            </div>
+    	    <!--<div class="pull-right">-->
+         <!--           <input type="button" class="btn btn-info" value="Back" onclick="history.back();">-->
+         <!--           <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">-->
+         <!--   </div>-->
 			<!--iframe-->
     	    <div class="embed-responsive embed-responsive-4by3">
                 <div class="tab-content" >
@@ -64,13 +66,25 @@
                     </div>
                     <br>
                     <div class = "row">
-                        <input type="submit"  class="btn btn-info"  value="Submit" onclick="">    
+                        <input id ="submit_curation" type="submit"  class="btn btn-info"  value="Submit" onclick="">    
                     </div>
                 </form>	
             </div>
         </div>
     </div>
     <script>
+    
+        x=document.getElementById("submit_curation");
+        x.disabled=true;
+        setTimeout(enable, 3000);
+    
+    
+        function enable() {
+            x.disabled=false;
+        }
+    
+    
+    
         var pubnum = '{{dataset.pubNo}}';
         if(pubnum.length>=9)
         {
@@ -87,6 +101,10 @@
                 document.getElementById('pmc_tab').innerHTML="<a data-toggle='pill' href='#menu3'>PMC</a>";
             }
         }
+       
+       
+
+
        
         
     </script>
