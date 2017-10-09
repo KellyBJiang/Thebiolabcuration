@@ -325,4 +325,12 @@ CROSS JOIN
 2017/ 10/ 4
     linux: open new terminal: ctrl + shift + n
     
-    
+2017/10/6
+    How to start Apache 2:
+        sudo service apache2 start
+    How to stop Apache 2:
+        sudo service apache2 stop
+    How to restart Apache 2:
+        sudo service apache2 restart
+    How to reload Apache 2:
+        sudo service apache2 reload

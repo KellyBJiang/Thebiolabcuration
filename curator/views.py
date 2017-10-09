@@ -9,6 +9,7 @@ import json
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db import connection
+# from django.contrib import messages
 
 
 # highlight
@@ -60,6 +61,7 @@ def index(request,user):
     items_per_page = request.session.get('items_per_page',10)
     nav = request.session.get('nav',0)
     
+   
     
     if request.method == 'POST':
         select_topic = request.POST.get('selector',  request.session.get('select_topic',-1)) 
@@ -74,7 +76,7 @@ def index(request,user):
         
     
     select_topic = int(select_topic)
-        
+    user_topic_set = Curation.objects.values_list('topic_id',flat = True).filter(user_id = user). distinct()   
         
         
     nav = int(nav)
@@ -102,8 +104,6 @@ def index(request,user):
             
         curation = c_s
         dataset = datasets_submitted
-        print "SUBMITTED curation:"
-        print curation.count()
     else:
         if select_topic == -1:
             print "nav = 2, select = -1"
@@ -115,8 +115,7 @@ def index(request,user):
             
         curation = c_u
         dataset = datasets_undecided
-        print "UNDECIDED curation:"
-        print curation.count()
+
 
     #pagination    
     page = request.GET.get('page', 1)
@@ -145,6 +144,7 @@ def index(request,user):
         'user_id':user,
         'nav':nav,
         "count":count,
+        "user_topic_set":user_topic_set,
     }
     
     if request.user.id == int(user) :
@@ -279,7 +279,7 @@ def curation(request,user,dataset_id,curation_id):
     file_.close()
     # Get pmc number
     convert_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+pubmedid+'&idtype=pmid&format=json&versions=yes&showaiid=no&tool=my_tool&email=my_email%40example.com&.submit=Submit'
-    convert_pmc=requests.get(convert_url)#get the jsonfile including the converted pmc_id 
+    convert_pmc=requests.get(convert_url)#get the jsonfimessages.info(request, "Submit success")le including the converted pmc_id 
     jsonString=convert_pmc.content # pmc id is under the tag content
     j = json.loads(jsonString)
 
