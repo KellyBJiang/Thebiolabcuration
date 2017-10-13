@@ -170,3 +170,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_URL = '/'
+
+#set session time out in 3 hours
+SESSION_COOKIE_AGE = 3*60*60 #

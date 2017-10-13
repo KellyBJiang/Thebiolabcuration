@@ -71,7 +71,7 @@ def register(request):
 @login_required(login_url='/') 
 def assign(request):
     if request.user.is_staff :
-        datasets = Dataset.objects.all()
+        datasets = Dataset.objects.all().order_by('id')
         users = User.objects.filter(is_staff=False)
         topics = Topic.objects.all()
         context = {
@@ -79,14 +79,14 @@ def assign(request):
             'datasets': datasets,
             'topics':topics
         }
+        for data in datasets:
+            print data.pk
+        
         template = loader.get_template("administrator/assign.html")
         # Get the selected id of topic, user,  datasets
         selected_datasets=request.POST.getlist('selected_datasets[]')
         selected_topic = request.POST.get('selected_topic')
         selected_users = request.POST.getlist('selected_users[]')
-        print selected_datasets
-        print selected_topic
-        print selected_users
         today = datetime.datetime.today()
         if len(selected_datasets) != 0 and len(selected_users)!=0:
             #SEL_DATASETS = Dataset.objects.values_list('id',flat=True).filter(pk__in = selected_datasets)
@@ -104,7 +104,6 @@ def assign(request):
                         curation.submit = 0
                         curation.date = today
                         curation.save()
-                        print curation
             # return HttpResponse(template.render(context, request))
     
         return HttpResponse(template.render(context, request))

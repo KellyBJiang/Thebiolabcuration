@@ -153,18 +153,18 @@
             var tid =$(this).val();
             var htmlContent = "";
             
-            "{% for data in datasets %}"
+            "{% for data in datasets%}"
                 var dataId = "{{data.topic}}";
                 if (dataId == tid) {
-                    htmlContent += "<option value={{data.pk}}>{{data.accNo}}<span>-</span>{{data.title}}</option>";
+                    htmlContent += "<option value={{data.pk}}>{{data.pk}}__{{data.accNo}}<span>__</span>{{data.title}}</option>";
                 }
             "{% endfor %}"
-            
+
             document.getElementById("filterdata").innerHTML = 
              "<select name='from[]' id='dataset' class='form-control' size='20' multiple='multiple'>"+
                 htmlContent+
              "</select>";
-          document.getElementById("filterdata_selected").innerHTML =
+           document.getElementById("filterdata_selected").innerHTML =
             '<select name="to[]" id="dataset_to" class="form-control" size="20" multiple="multiple"></select>';
          
             $('#dataset').multiselect({
@@ -174,7 +174,8 @@
                 },
                 fireSearch: function(value) {
                     return value.length > 1;
-                }
+                },
+                keepRenderingSort: true
             });
         });
         // document.getElementById("topic").change();
@@ -186,7 +187,7 @@
             },
             fireSearch: function(value) {
                 return value.length > 1;
-            }
+            },
         });
         
         $('#dataset').multiselect({
@@ -196,7 +197,8 @@
             },
             fireSearch: function(value) {
                 return value.length > 1;
-            }
+            },
+            keepRenderingSort: true
         });
         
 

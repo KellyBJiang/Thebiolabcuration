@@ -2,7 +2,7 @@
 {% block content %}
 	{% if request.user.is_authenticated %}
 		<!--navbar-->
-		<nav class="navbar navbar-default" style="background-color: #e3f2fd;">
+		<nav class="navbar navbar-default " style="background-color: #e3f2fd;">
 			<div class = "continer">
 				<div class = "row">
 					<div class = "col-sm-2">
@@ -27,7 +27,7 @@
 					<div class = "col-sm-2">
 						<form method="post" action={% url 'index' user_id %} class="form-inline">
 				     		{% csrf_token %}
-							<label for="items_per_page" style="margin-top:14px">items</label>
+							<label for="items_per_page" style="margin-top:14px">Items</label>
 				     		<select class="form-control" id="items_per_page" name="items_per_page" onchange="reply_items()"  style="margin-top:2px">
 								<option value="10" >10</option>
 								<option value="25" >25</option>
@@ -38,7 +38,7 @@
 						</form>
 					</div>
 					
-					<div class = "col-sm-4">
+					<div class = "col-sm-3">
 						<ul id="navbar_ul"  class="nav navbar-nav">
 					       		<li id="0" ><a href = "#">To Do</a></li>
 					       		<li id="1" ><a href = "#">Submitted</a></li>
@@ -53,12 +53,12 @@
 			       		</form>
 				    </div>
 				    
-				    <div class = "col-sm-2">
-				    	<div id="welcome">Welcome  {{user.username}}</div>
+				    <div class = "col-sm-3">
+				    	<div id="welcome">Welcome,  {{user.username}}</div>
 				    </div>
 				    
-				    <div class = "col-sm-1">
-					    <ul class="nav navbar-nav navbar-right"> 
+				    <div class = "col-sm-2">
+					    <ul class="nav navbar-nav"> 
 							 <li> <a href="/logout/"> Log Out </a></li>
 						</ul>    
 					</div>
@@ -66,7 +66,7 @@
 			</div>
 		</nav>
 		<div class="container">
-			you have <span id="assign_count">{{count}}</span> assigments:
+			You have <span id="assign_count">{{count}}</span> assigments:
 			<div id="display">
 				<table id='data_table' class='table table-hover'>
 					{% if nav == 2 or nav == 0 %}
@@ -167,13 +167,13 @@
 			$("form#navbar_form").find("input[name='navbar'][value='"+li_id+"']").prop('checked',true)
 			$("#navbar_button").click();
 	    });
-	    {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+	  //  {% if messages %}
+			// <ul class="messages">
+			//     {% for message in messages %}
+			//     <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+			//     {% endfor %}
+			// </ul>
+			// {% endif %}
 	    //keep user selected items per page
 	    //console.log("items_per_page: "+'{{items_per_page}}');
 	    var items_per_page = '{{items_per_page}}';

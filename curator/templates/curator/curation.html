@@ -2,44 +2,50 @@
 
 {% block content %}
     <!--navbar-->
-    <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li >
-                <a href="/curator/{{user_id}}"><img src="https://cdn4.iconfinder.com/data/icons/system-ui-set/512/triangle-arrow-left-back-last-vector-ui-128.png" style="height:20px; width=100%"></img>Back to Assignment</a>
-            </li>
-            <li><a data-toggle="pill" href="#menu1">GEO</a></li>
-            <li id="pub_tab"></li>
-            <li id="pmc_tab"></li>
-            <li ><a href="#" id = "back" onclick="window.history.back();"><button><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Go Back</button></a></li>
-            <li ><a href="#" id = "forward" onclick="window.history.forward();"><button><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> Go Forward</button></a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right "> 
-			<li> <a href="/logout/">Log Out </a></li>
-		</ul> 
+    <div id="nav_bar" class="col-sm-12" style="background-color:#fff; width:100%; padding-right:15px; position:fixed;" >
+        <div class = "row">
+            <div class="col-sm-7">
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="/curator/{{user_id}}"><img src="https://cdn4.iconfinder.com/data/icons/system-ui-set/512/triangle-arrow-left-back-last-vector-ui-128.png" style="height:20px; width=100%"></img>Back to Assignment</a>
+                    </li>
+                    <li><a data-toggle="pill" href="#menu1">GEO</a></li>
+                    <li id="pub_tab"></li>
+                    <li id="pmc_tab"></li>
+                    <li ><a href="#" id = "back" onclick="window.history.back();"><button><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Go Back</button></a></li>
+                    <li ><a href="#" id = "forward" onclick="window.history.forward();"><button><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span> Go Forward</button></a></li>
+                </ul>
+            </div>
+            <div class = "col-sm-2">
+            </div>
+            <div class = "col-sm-2" style="margin-top: 1.5rem;">
+                <span >Welcome,{{user.username}}</span>
+            </div>
+            <div class = "col-sm-1">
+                <ul class="nav navbar-nav "> 
+        			<li> <a href="/logout/">Log Out </a></li>
+        		</ul> 
+    		</div>
+		</div>
     </div>
-    <div class="row">
+    <div class="row" style="margin-top: 56px;">
     	<div class="col-sm-9">
-    	    <!--Back and forward button-->
-    	    <!--<div class="pull-right">-->
-         <!--           <input type="button" class="btn btn-info" value="Back" onclick="history.back();">-->
-         <!--           <input type="button" class="btn btn-info"  value="forward" onclick="history.forward();">-->
-         <!--   </div>-->
 			<!--iframe-->
     	    <div class="embed-responsive embed-responsive-4by3">
                 <div class="tab-content" >
                     <div id="menu1" class="tab-pane fade in active">
                          <!--To make the content in iframe larger, add :transform: scale(1.2);transform-origin: 50% 0; in style-->
-                        <iframe id="renderpage_ncbi" style="width: 100%; height: 100%; position: absolute;"  scrolling="yes" src="ncbi.html" name="tab_iframe">
+                        <iframe id="renderpage_ncbi" style="width: 100%; position: absolute;"  scrolling="yes" src="ncbi.html" name="tab_iframe">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
                     <div id="menu2" class="tab-pane fade">
-                        <iframe id="renderpage_pubmed" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="pubmed.html">
+                        <iframe id="renderpage_pubmed" style="width: 100%; position: absolute; " scrolling="yes" src="pubmed.html">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
                     <div id="menu3" class="tab-pane fade">
-                        <iframe id="renderpage_pmc" style="width: 100%; height: 100%; position: absolute; " scrolling="yes" src="pmc.html">
+                        <iframe id="renderpage_pmc" style="width: 100%; position: absolute; " scrolling="yes" src="pmc.html">
                             <p>Your browser does not support iframes.</p>
                         </iframe>
                     </div>
@@ -100,11 +106,21 @@
                 document.getElementById('pmc_tab').innerHTML="<a data-toggle='pill' href='#menu3'>PMC</a>";
             }
         }
-       
-       
-
-
-       
+        $(document).ready(function() {
+            //navbar scroll event
+            $(window).scroll(function () {
+                  //if you hard code, then use console
+                  //.log to determine when you want the 
+                  //nav bar to stick.  
+                //console.log($(window).scrollTop())
+                if ($(window).scrollTop() > 1) {
+                  $('#nav_bar').addClass('navbar-fixed');
+                }
+                if ($(window).scrollTop() < 1) {
+                  $('#nav_bar').removeClass('navbar-fixed');
+                }
+            }); 
+        });
         
     </script>
 {% endblock %}
