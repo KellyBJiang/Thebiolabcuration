@@ -3,5 +3,4 @@
 curator/templates/curator/ncbi.html
 curator/templates/curator/pmc.html
 curator/templates/curator/pubmed.html
-.c9/metadata/tab*
-.c9/metadata/workspace/.gitignore
+.c9/
