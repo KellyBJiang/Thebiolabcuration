@@ -17,8 +17,9 @@
  use curation_biolab
  
  +loadfile:
- +load data local infile '/home/zhaoli/curation/administrator/migrations/tmp/mm.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\r\n' (accNo, title, pubNo,topic);
- +
+ +load data local infile '/home/zhaoli/curation/administrator/migrations/tmp/mm.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\n' (accNo, title, pubNo,topic);
+ load data local infile '/home/ubuntu/workspace/administrator/migrations/tmp/dataset10_13.csv' into table administrator_dataset fields terminated by ',' enclosed by '"' lines terminated by '\n' (accNo, title, pubNo,topic);
+
  +
  +INSERT INTO administrator_curation (data_id_id, user_id_id, topic_id_id) SELECT id FROM administrator_dataset UNION SELECT id FROM auth_user UNION SELECT id FROM administrator_topic where id=1;
  +
@@ -311,7 +312,7 @@ CROSS JOIN
                     
             Solution:
             1. cmd:
-                $ touch .gitignore  (This is my path to gitignore)
+                $ touch .gitignore  (This is my path to gitignore) //create new file named .gitignore
                 $ git config --global core.excludesFile .gitignore
             2. delete the file that is about to ignore:
                 rm 'path_to_file'
