@@ -84,15 +84,20 @@ def index(request,user):
         if select_topic == -1:
             c_ids = Curation.objects.filter(user_id = user,submit = False) #to do curation
         else:
+         
             c_ids = Curation.objects.filter(user_id = user,topic_id = select_topic, submit = False) #to do curation
             datasets = datasets.filter(topic = select_topic)
             
         curation = c_ids
         dataset = datasets
+        print "TODO curation:"
+        print curation.count()
     elif nav == 1:
         if select_topic == -1:
+            print "nav = 1, select = -1"
             c_s = Curation.objects.filter(user_id = user,submit = True)
         else:
+            print "nav = 1, select != -1"
             c_s = Curation.objects.filter(user_id = user,topic_id = select_topic, submit = True)
             datasets_submitted = datasets_submitted.filter(topic = select_topic)
             
@@ -100,8 +105,10 @@ def index(request,user):
         dataset = datasets_submitted
     else:
         if select_topic == -1:
+            print "nav = 2, select = -1"
             c_u = Curation.objects.filter(user_id = user,result='U')
         else:
+            print "nav = 2, select != -1"
             c_u = Curation.objects.filter(user_id = user,topic_id = select_topic, result='U')
             datasets_undecided = datasets_undecided.filter(topic = select_topic)
             
@@ -336,6 +343,9 @@ def pubmed(request,user,dataset_id,curation_id):
     else:
          highlight.append('');
          
+    # soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[0]))
+    # soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[1])) 
+    # soup_pattern.append(re.split(r'[;,\s]\s*' ,highlight[2]))
     soup_pattern.append(re.split(';' ,highlight[0]))
     soup_pattern.append(re.split(';' ,highlight[1])) 
     soup_pattern.append(re.split(';',highlight[2]))
@@ -499,4 +509,6 @@ def pmc(request,user,dataset_id,curation_id):
     context = {
                 'pmc_delay': pmc_delay,
             }
+    print "pmc_delay"
+    print pmc_delay
     return HttpResponse(template.render(context, request))
